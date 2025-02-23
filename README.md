@@ -31,10 +31,10 @@ Advanced Features:
 - Storage of different file types to allow for editing.
 
 ## How to Use
-Upload PDFs:
+#### Upload PDFs:
 1. Navigate to the "PDF Database System" section.
 2. Use the upload form to add PDF files to the system.
 3. Uploaded files will appear in the table with their unique ID and filename.
-Manage Files:
+#### Manage Files:
 1. Download files by clicking the "Download" button.
 2. Delete files by clicking the "Delete" button.
