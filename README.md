@@ -9,7 +9,6 @@ VolleyMap is a digital whiteboard and play management system designed specifical
 - Store uploaded files in a MySQL database with metadata (e.g., file name, upload date).
 - View a list of uploaded files with unique IDs and filenames.
 - Download or delete files directly from the interface.
-User-Friendly Interface:
 - Web interface built with HTML, Bootstrap, and JavaScript.
 - Backend powered by Flask for handling file uploads, downloads, and database interactions.
 
