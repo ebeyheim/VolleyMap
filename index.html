@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>PDF Database</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+	</head>
+	<body>
+		<div class="container mt-5">
+			<h1 class="text-center">PDF Database</h1>
+
+			<!-- File Upload Form -->
+			<form id="uploadForm" class="mb-4">
+				<div class="mb-3">
+					<label for="fileInput" class="form-label">Upload PDF</label>
+					<input type="file" id="fileInput" class="form-control" accept="application/pdf" required />
+				</div>
+				<button type="submit" class="btn btn-primary">Upload</button>
+			</form>
+
+			<!-- File List Table -->
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>File Name</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody id="fileTableBody">
+					<!-- Dynamic content will be inserted here -->
+				</tbody>
+			</table>
+		</div>
+
+		<script>
+			// Fetch and display files
+			function fetchFiles() {
+				axios
+					.get("http://127.0.0.1:5000/uploads") // Correct backend URL
+					.then((response) => {
+						console.log("Response received:", response.data); // Debugging log
+
+						// Validate the response data
+						if (!Array.isArray(response.data)) {
+							throw new Error("Unexpected response format");
+						}
+
+						const files = response.data;
+						const tableBody = document.getElementById("fileTableBody");
+						tableBody.innerHTML = ""; // Clear the table
+
+						if (files.length === 0) {
+							// Handle the case where no files are found
+							const row = document.createElement("tr");
+							row.innerHTML = `<td colspan="3" class="text-center">No files found</td>`;
+							tableBody.appendChild(row);
+							return;
+						}
+
+						// Populate the table with file data
+						files.forEach((file) => {
+							console.log("Adding file to table:", file); // Debugging log
+							const row = document.createElement("tr");
+							row.innerHTML = `
+                    <td>${file.id}</td>
+                    <td>${file.file_name}</td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="downloadFile(${file.id})">Download</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteFile(${file.id})">Delete</button>
+                    </td>
+                `;
+							tableBody.appendChild(row);
+						});
+					})
+					.catch((error) => {
+						console.error("Error fetching files:", error); // Log the error for debugging
+						alert("Failed to fetch files. Please try again later.");
+					});
+			}
+
+			// Upload file
+			document.getElementById("uploadForm").addEventListener("submit", function (event) {
+				event.preventDefault();
+				const fileInput = document.getElementById("fileInput");
+				const file = fileInput.files[0];
+				if (file) {
+					const formData = new FormData();
+					formData.append("file", file);
+					console.log("Uploading file to Flask backend at http://127.0.0.1:5500/PDF_database/uploads/"); // Debugging log
+					axios
+						.post("http://127.0.0.1:5000/uploads", formData) // Correct backend URL
+						.then(() => {
+							alert("File uploaded successfully!");
+							fileInput.value = ""; // Clear the input
+							fetchFiles(); // Refresh the file list
+						})
+						.catch((error) => {
+							console.error("Error uploading file:", error.response ? error.response.data : error);
+							const errorMessage = error.response && error.response.data && error.response.data.error ? error.response.data.error : "An unknown error occurred.";
+							alert(`Failed to upload file: ${errorMessage}`);
+						});
+				} else {
+					alert("Please select a file to upload.");
+				}
+			});
+
+			// Download file
+			function downloadFile(id) {
+				window.open(`http://127.0.0.1:5000/uploads/${id}`, "_blank");
+			}
+
+			// Delete file
+			function deleteFile(id) {
+				axios
+					.delete(`http://127.0.0.1:5000/uploads/${id}`)
+					.then(() => {
+						alert("File deleted successfully!");
+						fetchFiles(); // Refresh the file list
+					})
+					.catch((error) => console.error("Error deleting file:", error));
+			}
+
+			// Initial fetch
+			fetchFiles();
+		</script>
+	</body>
+</html>
