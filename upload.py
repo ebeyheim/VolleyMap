@@ -7,7 +7,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  # CORS for all routes
 
-app = Flask(__name__)
 UPLOAD_FOLDER = './uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -26,13 +25,13 @@ db_config = {
 def get_db_connection():
     return mysql.connector.connect(**db_config)
 
-# Home route to serve the HTML page
+# Home route to serve HTML page
 @app.route('/')
 def index():
     return render_template('index.html')
 
 # Endpoint to upload a file
-@app.route('/upload', methods=['POST'])
+@app.route('/uploads', methods=['POST'])
 def upload_file():
     try:
         if 'file' not in request.files:
@@ -71,19 +70,22 @@ def upload_file():
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
     
 # Endpoint to retrieve all files
-@app.route('/files', methods=['GET'])
+@app.route('/uploads', methods=['GET'])
 def get_files():
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT id, file_name FROM plays")  # Adjust the query if needed
+            cursor.execute("SELECT id, file_name FROM plays")  # Querying the database
             files = cursor.fetchall()
+            print("Files fetched from database:", files)  # Debugging log
+            # Ensure the response is an array of objects with id and file_name
             return jsonify([{"id": row[0], "file_name": row[1]} for row in files]), 200
     except Exception as e:
+        print(f"Error fetching files: {str(e)}")  # Debugging log
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 # Endpoint to download a file by ID
-@app.route('/files/<int:id>', methods=['GET'])
+@app.route('/uploads/<int:id>', methods=['GET'])
 def download_file(id):
     try:
         conn = get_db_connection()
@@ -101,7 +103,7 @@ def download_file(id):
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 # Endpoint to delete a file by ID
-@app.route('/files/<int:id>', methods=['DELETE'])
+@app.route('/uploads/<int:id>', methods=['DELETE'])
 def delete_file(id):
     try:
         conn = get_db_connection()
