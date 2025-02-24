@@ -11,6 +11,7 @@ VolleyMap is a digital whiteboard and play management system designed specifical
 - Download or delete files directly from the interface.
 - Web interface built with HTML, Bootstrap, and JavaScript.
 - Backend powered by Flask for handling file uploads, downloads, and database interactions.
+- Categorize plays by type (e.g., offensive, defensive, serve-receive).
 
 ## Planned Features
 
@@ -20,8 +21,8 @@ VolleyMap is a digital whiteboard and play management system designed specifical
 - Allow users to add player positions, movements, and annotations directly on a digital court.
 
 ### Play Organization:
-- Categorize plays by type (e.g., offensive, defensive, serve-receive).
 - Add tags and descriptions for better searchability and organization.
+- Icons/Images for categories
 
 ### Enhanced Collaboration:
 - Enable sharing of plays with team members or other coaches.
