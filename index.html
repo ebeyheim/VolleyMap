@@ -13,12 +13,44 @@
 
 			<!-- File Upload Form -->
 			<form id="uploadForm" class="mb-4">
-				<div class="mb-3">
-					<label for="fileInput" class="form-label">Upload PDF</label>
-					<input type="file" id="fileInput" class="form-control" accept="application/pdf" required />
+				<div class="row">
+					<div class="col-md-8">
+						<label for="fileInput" class="form-label">Upload PDF</label>
+						<input type="file" id="fileInput" class="form-control" accept="application/pdf" required />
+					</div>
+					<div class="col-md-4">
+						<label for="uploadCategorySelect" class="form-label">Select Category</label>
+						<select id="uploadCategorySelect" class="form-select">
+							<!-- Categories will be dynamically added here -->
+						</select>
+					</div>
 				</div>
-				<button type="submit" class="btn btn-primary">Upload</button>
+				<button type="submit" class="btn btn-primary mt-3">Upload</button>
 			</form>
+
+			<div class="mb-4">
+				<h3>Manage Categories</h3>
+				<form id="categoryForm" class="mb-3">
+					<div class="mb-3">
+						<label for="categoryName" class="form-label">Category Name</label>
+						<input type="text" id="categoryName" class="form-control" placeholder="Enter category name" required />
+					</div>
+					<button type="submit" class="btn btn-primary">Add Category</button>
+				</form>
+				<ul id="categoryList" class="list-group">
+					<!-- Categories will be dynamically added here -->
+				</ul>
+			</div>
+
+			<div class="mb-3">
+				<h3>Saved Files</h3>
+				<label for="viewCategorySelect" class="form-label">View Files by Category</label>
+				<select id="viewCategorySelect" class="form-select">
+					<option value="All">All</option>
+					<!-- Default option -->
+					<!-- Categories will be dynamically added here -->
+				</select>
+			</div>
 
 			<!-- File List Table -->
 			<table class="table table-bordered">
@@ -39,7 +71,7 @@
 			// Fetch and display files
 			function fetchFiles() {
 				axios
-					.get("http://127.0.0.1:5000/uploads") // Correct backend URL
+					.get("http://127.0.0.1:5000/uploads")
 					.then((response) => {
 						console.log("Response received:", response.data); // Debugging log
 
@@ -85,13 +117,17 @@
 			document.getElementById("uploadForm").addEventListener("submit", function (event) {
 				event.preventDefault();
 				const fileInput = document.getElementById("fileInput");
+				const uploadCategorySelect = document.getElementById("uploadCategorySelect");
 				const file = fileInput.files[0];
+				const category = uploadCategorySelect.value;
+
 				if (file) {
 					const formData = new FormData();
 					formData.append("file", file);
-					console.log("Uploading file to Flask backend at http://127.0.0.1:5500/PDF_database/uploads/"); // Debugging log
+					formData.append("category", category); // Include the selected category
+
 					axios
-						.post("http://127.0.0.1:5000/uploads", formData) // Correct backend URL
+						.post("http://127.0.0.1:5000/uploads", formData)
 						.then(() => {
 							alert("File uploaded successfully!");
 							fileInput.value = ""; // Clear the input
@@ -99,8 +135,7 @@
 						})
 						.catch((error) => {
 							console.error("Error uploading file:", error.response ? error.response.data : error);
-							const errorMessage = error.response && error.response.data && error.response.data.error ? error.response.data.error : "An unknown error occurred.";
-							alert(`Failed to upload file: ${errorMessage}`);
+							alert("Failed to upload file. Please try again.");
 						});
 				} else {
 					alert("Please select a file to upload.");
@@ -122,6 +157,114 @@
 					})
 					.catch((error) => console.error("Error deleting file:", error));
 			}
+			// Fetch Categories
+			function fetchCategories() {
+				axios
+					.get("http://127.0.0.1:5000/categories")
+					.then((response) => {
+						const categories = response.data;
+
+						// Populate the upload category dropdown
+						const uploadCategorySelect = document.getElementById("uploadCategorySelect");
+						uploadCategorySelect.innerHTML = ""; // Clear existing options
+						categories.forEach((category) => {
+							const option = document.createElement("option");
+							option.value = category;
+							option.textContent = category;
+							uploadCategorySelect.appendChild(option);
+						});
+
+						// Populate the view category dropdown
+						const viewCategorySelect = document.getElementById("viewCategorySelect");
+						viewCategorySelect.innerHTML = '<option value="All">All</option>';
+						categories.forEach((category) => {
+							const option = document.createElement("option");
+							option.value = category;
+							option.textContent = category;
+							viewCategorySelect.appendChild(option);
+						});
+					})
+					.catch((error) => console.error("Error fetching categories:", error));
+			}
+
+			// Create category
+			document.getElementById("categoryForm").addEventListener("submit", function (event) {
+				event.preventDefault();
+				const categoryName = document.getElementById("categoryName").value;
+
+				axios
+					.post("http://127.0.0.1:5000/categories", { name: categoryName })
+					.then(() => {
+						alert("Category created successfully!");
+						document.getElementById("categoryName").value = "";
+						fetchCategories(); // Refresh the category list
+					})
+					.catch((error) => {
+						if (error.response && error.response.data && error.response.data.error) {
+							alert(error.response.data.error); // Display the error message from the backend
+						} else {
+							console.error("Error creating category:", error);
+							alert("An error occurred while creating the category. Please try again.");
+						}
+					});
+			});
+
+			// Fetch files from category
+			document.getElementById("viewCategorySelect").addEventListener("change", function () {
+				const selectedCategory = this.value;
+				fetchFilesByCategory(selectedCategory);
+			});
+
+			// Fetch files by category
+			function fetchFilesByCategory(category) {
+				axios
+					.get(`http://127.0.0.1:5000/uploads/category/${category}`)
+					.then((response) => {
+						const files = response.data;
+						const tableBody = document.getElementById("fileTableBody");
+						tableBody.innerHTML = ""; // Clear the table
+
+						if (files.length === 0) {
+							// Handle the case where no files are found
+							const row = document.createElement("tr");
+							row.innerHTML = `<td colspan="3" class="text-center">No files found</td>`;
+							tableBody.appendChild(row);
+							return;
+						}
+
+						// Populate the table with file data
+						files.forEach((file) => {
+							const row = document.createElement("tr");
+							row.innerHTML = `
+                    <td>${file.id}</td>
+                    <td>${file.file_name}</td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="downloadFile(${file.id})">Download</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteFile(${file.id})">Delete</button>
+                    </td>
+                `;
+							tableBody.appendChild(row);
+						});
+					})
+					.catch((error) => {
+						console.error("Error fetching files by category:", error);
+						alert("Failed to fetch files. Please try again later.");
+					});
+			}
+
+			// Delete category
+			function deleteCategory(categoryName) {
+				axios
+					.delete(`http://127.0.0.1:5000/categories/${categoryName}`)
+					.then(() => {
+						alert("Category deleted successfully!");
+						fetchCategories();
+					})
+					.catch((error) => console.error("Error deleting category:", error));
+			}
+
+			// Fetch categories on page load
+			fetchCategories();
 
 			// Initial fetch
 			fetchFiles();
