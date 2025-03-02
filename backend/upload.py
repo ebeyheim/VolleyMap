@@ -249,4 +249,4 @@ def get_files_by_category(category_name):
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
     
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)

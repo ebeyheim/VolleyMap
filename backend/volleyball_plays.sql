@@ -12,3 +12,10 @@ CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
 );
+
+ALTER TABLE plays ADD COLUMN category_id INT DEFAULT NULL;
+
+-- Add a foreign key constraint to link categories
+ALTER TABLE plays ADD CONSTRAINT fk_category
+FOREIGN KEY (category_id) REFERENCES categories(id)
+ON DELETE SET NULL;
