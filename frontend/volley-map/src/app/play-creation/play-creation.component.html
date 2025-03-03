@@ -1,0 +1,29 @@
+<div class="court" cdkDropList (cdkDropListDropped)="onDrop($event)">
+  <div
+    class="player"
+    *ngFor="let player of players; let i = index"
+    cdkDrag
+    [style.left.px]="player.position.x"
+    [style.top.px]="player.position.y"
+  >
+    {{ player.name }}
+  </div>
+</div>
+<div class="annotations">
+  <input type="text" placeholder="Add annotation" [(ngModel)]="annotation" />
+  <button (click)="addAnnotation()">Add</button>
+</div>
+<div *ngFor="let note of annotations" class="annotation">
+  {{ note }}
+</div>
+<div class="save">
+    <label for="category">Select Category:</label>
+    <select id="category" #category>
+      <option value="offense">Offense</option>
+      <option value="defense">Defense</option>
+      <option value="serving">Serving</option>
+      <option value="general">General</option>
+      <option value="Uncategorized">Uncategorized</option>
+    </select>
+    <button (click)="generatePDF(category.value)">Save as PDF</button>
+  </div>
