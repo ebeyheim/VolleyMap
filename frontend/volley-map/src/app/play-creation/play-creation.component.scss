@@ -1,34 +1,113 @@
+/* Main container to center the court and organize elements */
+.container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  height: 100vh; 
+  background-color: #f9f9f9; 
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Court styling */
 .court {
-    width: 600px;
-    height: 300px;
-    background-color: #f0f0f0;
-    border: 2px solid #000;
-    position: relative;
-    margin: 20px auto;
-  }
-  
-  .player {
-    width: 50px;
-    height: 50px;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    cursor: grab;
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
-  .annotations {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .annotation {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #333;
-  }
+  position: relative;
+  width: 500px;
+  height: 750px;
+  border: 1px solid black;
+  background-color: white; 
+  overflow: hidden;
+}
+
+/* Player styling */
+.player {
+  position: static; 
+  width: 50px;
+  height: 50px;
+  background-color: blue;
+  color: white;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 50%;
+  cursor: grab;
+  z-index: 10;
+}
+
+.player.cdk-drag-preview {
+  z-index: 1000; /* Ensure the dragged player is above all other elements */
+}
+
+.player.cdk-drag-placeholder {
+  display: none; /* Hide the placeholder to allow overlapping */
+}
+
+/* Annotations  */
+.annotations {
+  margin-top: 20px;
+  text-align: center;
+  width: 100%; 
+}
+
+.annotations input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 300px;
+  margin-right: 10px;
+}
+
+.annotations button {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.annotations button:hover {
+  background-color: #0056b3;
+}
+
+/* Individual annotation styling */
+.annotation {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Save section */
+.save {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.save label {
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.save select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.save button {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save button:hover {
+  background-color: #218838;
+}
