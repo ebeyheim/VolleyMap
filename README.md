@@ -13,12 +13,19 @@ VolleyMap is a digital whiteboard and play management system designed specifical
 - Backend powered by Flask for handling file uploads, downloads, and database interactions.
 - Categorize plays by type (e.g., offensive, defensive, serve-receive).
 
-## Planned Features
-
 ### Play Creation Tool:
 - Implement a drag-and-drop interface for creating volleyball plays.
 - Use Angular CDK to provide a robust and interactive design experience.
 - Allow users to add player positions, movements, and annotations directly on a digital court.
+
+  
+## Planned Features
+
+### Toolbar
+- Toolbar with premade objects the user can drag-and-drop onto the court
+- Item deletion feature
+- Colors
+- Editable text
 
 ### Play Organization:
 - Add tags and descriptions for better searchability and organization.
@@ -38,3 +45,8 @@ Advanced Features:
 #### Manage Files:
 1. Download files by clicking the "Download" button.
 2. Delete files by clicking the "Delete" button.
+#### Create Plays
+1. Drag objects around court
+2. Add annotations
+3. Select category to save file to
+4. Save file as PDF
