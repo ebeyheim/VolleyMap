@@ -1,5 +1,12 @@
 <div class="container">
   <div class="court">
+    <!-- Centerline is handled by CSS pseudo-element -->
+
+    <!-- Attack lines -->
+    <div class="attack-line top"></div>
+    <div class="attack-line bottom"></div>
+
+    <!-- Players -->
     <div
       class="player"
       *ngFor="let player of players; let i = index"
@@ -43,4 +50,3 @@
     <button (click)="generatePDF(category.value)">Save as PDF</button>
   </div>
 </div>
-
