@@ -4,19 +4,29 @@
   flex-direction: column; 
   align-items: center; 
   justify-content: flex-start; 
-  height: 100vh; 
+  height: 200vh; 
   background-color: #f9f9f9; 
   padding: 20px;
   box-sizing: border-box;
   z-index: 1;
 }
+/* Court container styling */
+.court-container {
+  position: relative;
+  width: 625px; /* 550px (court width) + 75px */
+  height: 890px; /* 815px (court height) + 75px */
+  border: 1.5px solid #000;
+  overflow: hidden; /* Ensure overflow is hidden to prevent dragging outside */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* Court styling */
 .court {
   position: relative;
-  width: 543.333px;
+  width: 550px;
   height: 815px;
-  flex-shrink: 0;
   border: 1.5px solid #000;
   background: #FCFFEF;
   overflow: visible;

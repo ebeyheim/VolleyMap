@@ -1,43 +1,45 @@
 <div class="container">
-  <div class="court">
-    <!-- Attack lines -->
-    <div class="attack-line top"></div>
-    <div class="attack-line bottom"></div>
+  <div class="court-container">
+    <div class="court">
+      <!-- Attack lines -->
+      <div class="attack-line top"></div>
+      <div class="attack-line bottom"></div>
 
-    <!-- Zone overlay -->
-    <div class="zone-overlay" *ngIf="showZones">
-      <!-- Opponent's court -->
-      <div class="zone zone-1">1</div>
-      <div class="zone zone-6">6</div>
-      <div class="zone zone-5">5</div>
-      <div class="zone zone-2">2</div>
-      <div class="zone zone-3">3</div>
-      <div class="zone zone-4">4</div>
+      <!-- Zone overlay -->
+      <div class="zone-overlay" *ngIf="showZones">
+        <!-- Opponent's court -->
+        <div class="zone zone-1">1</div>
+        <div class="zone zone-6">6</div>
+        <div class="zone zone-5">5</div>
+        <div class="zone zone-2">2</div>
+        <div class="zone zone-3">3</div>
+        <div class="zone zone-4">4</div>
 
-      <!-- Your court -->
-      <div class="zone zone-4">4</div>
-      <div class="zone zone-3">3</div>
-      <div class="zone zone-2">2</div>
-      <div class="zone zone-5">5</div>
-      <div class="zone zone-6">6</div>
-      <div class="zone zone-1">1</div>
-    </div>
+        <!-- Your court -->
+        <div class="zone zone-4">4</div>
+        <div class="zone zone-3">3</div>
+        <div class="zone zone-2">2</div>
+        <div class="zone zone-5">5</div>
+        <div class="zone zone-6">6</div>
+        <div class="zone zone-1">1</div>
+      </div>
 
-    <!-- Players -->
-    <div
-      class="player"
-      *ngFor="let player of players; let i = index"
-      cdkDragBoundary=".court"
-      cdkDrag
-      [style.left.px]="player.position.x"
-      [style.top.px]="player.position.y"
-      [style.zIndex]="player.zIndex"
-      (cdkDragMoved)="onDragMoved($event, player)"
-      (cdkDragEnded)="onDragEnded($event, player)"
-    >
-      {{ player.name }}
-      <div *cdkDragPreview class="player-preview">
+      <!-- Players -->
+      <div
+        class="player"
+        *ngFor="let player of players; let i = index"
+        cdkDragBoundary=".court-container"
+        cdkDrag
+        [style.left.px]="player.position.x"
+        [style.top.px]="player.position.y"
+        [style.zIndex]="player.zIndex"
+        (cdkDragMoved)="onDragMoved($event, player)"
+        (cdkDragEnded)="onDragEnded($event, player)"
+      >
         {{ player.name }}
+        <div *cdkDragPreview class="player-preview">
+          {{ player.name }}
+        </div>
       </div>
     </div>
   </div>

@@ -45,10 +45,6 @@ onDragMoved(event: any, player: any): void {
   const courtRect = (event.source.element.nativeElement.parentElement as HTMLElement).getBoundingClientRect();
   const dragRect = event.source.element.nativeElement.getBoundingClientRect();
 
-  let newX = event.pointerPosition.x - courtRect.left - dragRect.width / 2;
-  let newY = event.pointerPosition.y - courtRect.top - dragRect.height / 2;
-
-
 
 
   // Temporarily set a high zIndex while dragging
@@ -58,8 +54,6 @@ onDragMoved(event: any, player: any): void {
 onDragEnded(event: any, player: any): void {
   const courtRect = (event.source.element.nativeElement.parentElement as HTMLElement).getBoundingClientRect();
   const dragRect = event.source.element.nativeElement.getBoundingClientRect();
-
-
 
   // Update zIndex to ensure the dragged item stays on top after dropping
   player.zIndex = Math.max(...this.players.map(p => p.zIndex)) + 1;
