@@ -1,15 +1,33 @@
 <div class="container">
   <div class="court">
-    <!-- Centerline is handled by CSS pseudo-element -->
-
     <!-- Attack lines -->
     <div class="attack-line top"></div>
     <div class="attack-line bottom"></div>
+
+    <!-- Zone overlay -->
+    <div class="zone-overlay" *ngIf="showZones">
+      <!-- Opponent's court -->
+      <div class="zone zone-1">1</div>
+      <div class="zone zone-6">6</div>
+      <div class="zone zone-5">5</div>
+      <div class="zone zone-2">2</div>
+      <div class="zone zone-3">3</div>
+      <div class="zone zone-4">4</div>
+
+      <!-- Your court -->
+      <div class="zone zone-4">4</div>
+      <div class="zone zone-3">3</div>
+      <div class="zone zone-2">2</div>
+      <div class="zone zone-5">5</div>
+      <div class="zone zone-6">6</div>
+      <div class="zone zone-1">1</div>
+    </div>
 
     <!-- Players -->
     <div
       class="player"
       *ngFor="let player of players; let i = index"
+      cdkDragBoundary=".court"
       cdkDrag
       [style.left.px]="player.position.x"
       [style.top.px]="player.position.y"
@@ -23,6 +41,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Toggle button -->
+  <button class="toggle-zones" (click)="toggleZones()">
+    {{ showZones ? "Hide Zones" : "Show Zones" }}
+  </button>
 
   <div class="annotations">
     <input

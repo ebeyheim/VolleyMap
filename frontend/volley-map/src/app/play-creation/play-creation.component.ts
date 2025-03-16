@@ -25,6 +25,8 @@ export class PlayCreationComponent {
 
   annotation: string = '';
   annotations: string[] = [];
+  showZones: boolean = false; // Track whether zones are visible
+
 
   constructor(private http: HttpClient) {}
 
@@ -35,19 +37,19 @@ export class PlayCreationComponent {
     }
   }
 
+  toggleZones(): void {
+    this.showZones = !this.showZones; // Toggle the zone view
+  }
+
 onDragMoved(event: any, player: any): void {
   const courtRect = (event.source.element.nativeElement.parentElement as HTMLElement).getBoundingClientRect();
   const dragRect = event.source.element.nativeElement.getBoundingClientRect();
 
-  let newX = event.pointerPosition.x - courtRect.left;
-  let newY = event.pointerPosition.y - courtRect.top;
+  let newX = event.pointerPosition.x - courtRect.left - dragRect.width / 2;
+  let newY = event.pointerPosition.y - courtRect.top - dragRect.height / 2;
 
-  // Constrain the position within the court boundaries
-  newX = Math.max(0, Math.min(newX, courtRect.width - dragRect.width));
-  newY = Math.max(0, Math.min(newY, courtRect.height - dragRect.height));
 
-  player.position.x = newX;
-  player.position.y = newY;
+
 
   // Temporarily set a high zIndex while dragging
   player.zIndex = Math.max(...this.players.map(p => p.zIndex)) + 1;
@@ -57,8 +59,7 @@ onDragEnded(event: any, player: any): void {
   const courtRect = (event.source.element.nativeElement.parentElement as HTMLElement).getBoundingClientRect();
   const dragRect = event.source.element.nativeElement.getBoundingClientRect();
 
-  player.position.x = dragRect.left - courtRect.left;
-  player.position.y = dragRect.top - courtRect.top;
+
 
   // Update zIndex to ensure the dragged item stays on top after dropping
   player.zIndex = Math.max(...this.players.map(p => p.zIndex)) + 1;

@@ -3,11 +3,12 @@
   display: flex;
   flex-direction: column; 
   align-items: center; 
-  justify-content: center; 
+  justify-content: flex-start; 
   height: 100vh; 
   background-color: #f9f9f9; 
   padding: 20px;
   box-sizing: border-box;
+  z-index: 1;
 }
 
 /* Court styling */
@@ -16,31 +17,10 @@
   width: 543.333px;
   height: 815px;
   flex-shrink: 0;
-  border: 1px solid #000;
+  border: 1.5px solid #000;
   background: #FCFFEF;
-  overflow: hidden;
-}
-
-/* Court styling */
-.court {
-  position: relative;
-  width: 543.333px; /* Court width */
-  height: 815px; /* Court height */
-  flex-shrink: 0;
-  border: 2px solid #000; /* Boundary lines */
-  background: #FCFFEF; /* Court background color */
-  overflow: hidden;
-}
-
-/* Court styling */
-.court {
-  position: relative;
-  width: 543.333px; /* Court width */
-  height: 815px; /* Court height */
-  flex-shrink: 0;
-  border: 2px solid #000; /* Boundary lines */
-  background: #FCFFEF; /* Court background color */
-  overflow: visible; /* Allow lines to extend beyond the court */
+  overflow: visible;
+  margin-top: 20px;
 }
 
 /* Centerline */
@@ -53,7 +33,7 @@
   height: 2px; /* Line thickness */
   background-color: #000; /* Solid line color */
   transform: translateY(-50%);
-  z-index: 1; /* Ensure it appears below players */
+  z-index: 2; /* Ensure it appears below players */
 }
 
 /* Attack lines (dashed and extended) */
@@ -63,20 +43,92 @@
   width: calc(100% + 40px); /* Extend beyond the right edge */
   height: 0; /* No height, as it's a border */
   border-top: 2px dashed #000; /* Dashed line */
-  z-index: 1; /* Ensure it appears below players */
+  z-index: 2; /* Ensure it appears below players */
 }
 
 .court .attack-line.top {
-  top: calc(50% - 122px); /* 3 meters from the centerline (scaled) */
+  top: calc(50% - 164px); /* 3 meters from the centerline (scaled) */
 }
 
 .court .attack-line.bottom {
-  top: calc(50% + 122px); /* 3 meters from the centerline (scaled) */
+  top: calc(50% + 162px); /* 3 meters from the centerline (scaled) */
+}
+
+/* Zone overlay */
+.zone-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3; /* Above the court but below players */
+  pointer-events: none; /* Allow interactions with players */
+  display: grid;
+  grid-template-rows: 30% 20% 20% 30%; /* Adjust row heights for back and front rows */
+  grid-template-columns: repeat(3, 1fr); /* Three columns per row */
+}
+
+/* Individual zones */
+.zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(250, 130, 130, 0.083); /* Light red overlay */
+  border: 1px solid rgb(0, 0, 0); /* Optional: Add borders for zones */
+  pointer-events: none; /* Prevent interaction */
+  z-index: 3; /* Above the court but below players */
+
+}
+
+/* Specific zones for front row (2, 3, 4) */
+.zone.zone-2,
+.zone.zone-3,
+.zone.zone-4 {
+  grid-row: 2; /* Place in the second row */
+}
+
+/* Specific zones for back row (1, 5, 6) */
+.zone.zone-1,
+.zone.zone-5,
+.zone.zone-6 {
+  grid-row: 1; /* Place in the first row */
+}
+
+/* Specific zones for bottom front row (2, 3, 4) */
+.zone.zone-2:nth-child(n + 7),
+.zone.zone-3:nth-child(n + 7),
+.zone.zone-4:nth-child(n + 7) {
+  grid-row: 3; /* Place in the third row */
+}
+
+/* Specific zones for bottom back row (1, 5, 6) */
+.zone.zone-1:nth-child(n + 7),
+.zone.zone-5:nth-child(n + 7),
+.zone.zone-6:nth-child(n + 7) {
+  grid-row: 4; /* Place in the fourth row */
+}
+
+/* Toggle button */
+.toggle-zones {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.toggle-zones:hover {
+  background-color: #0056b3;
 }
 
 /* Player styling */
 .player {
-  position: static; 
+  position: absolute; 
   width: 50px;
   height: 50px;
   background-color: blue;
@@ -86,6 +138,7 @@
   border-radius: 50%;
   cursor: grab;
   z-index: 10;
+  transform: translateZ(0); /* Force a new stacking context */
 }
 
 .player.cdk-drag-preview {
