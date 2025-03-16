@@ -48,6 +48,8 @@ testing/
 /libpeerconnection.log
 testem.log
 /typings
+figmaTEST.html
+figmaTEST.css
 
 # System files
 .DS_Store
