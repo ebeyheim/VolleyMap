@@ -5,6 +5,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-play-creation',
@@ -45,6 +46,34 @@ export class PlayCreationComponent {
       zIndex: 1000,
     });
     console.log('Court shapes:', this.courtShapes); // Debugging
+  }
+
+  // Custom Tooltip
+  contextMenuVisible = false;
+  contextMenuPosition = { x: 0, y: 0 };
+  selectedShape: any = null;
+
+  onRightClick(event: MouseEvent, shape: any): void {
+    event.preventDefault(); // Prevent the default browser context menu
+    this.contextMenuVisible = true;
+    this.contextMenuPosition = { x: event.clientX, y: event.clientY }; // Set the position of the tooltip
+    this.selectedShape = shape; // Store the selected shape
+  }
+
+  deleteShapeFromContextMenu(): void {
+    if (this.selectedShape) {
+      const shapeIndex = this.courtShapes.indexOf(this.selectedShape);
+      if (shapeIndex !== -1) {
+        this.courtShapes.splice(shapeIndex, 1); // Remove the shape from the array
+      }
+      this.contextMenuVisible = false; // Hide the context menu
+      this.selectedShape = null; // Clear the selected shape
+    }
+  }
+
+  @HostListener('document:click')
+  hideContextMenu(): void {
+    this.contextMenuVisible = false;
   }
 
   annotation: string = '';

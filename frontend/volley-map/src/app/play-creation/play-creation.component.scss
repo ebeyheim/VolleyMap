@@ -1,3 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: flex-start; 
+  background-color: #f9f9f9; 
+  padding: 20px;
+  height: auto;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.context-menu {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  padding: 10px;
+  border-radius: 5px;
+  animation: fadeIn 0.2s ease-in-out;
+
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.context-menu button {
+  background: none;
+  border: none;
+  color: #f44336; /* Red color for delete */
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.context-menu button:hover {
+  font-weight: bold;
+}
+
 .toolbar {
   position: fixed;
   left: 0;
@@ -79,8 +126,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  position: absolute;
   cursor: grab;
+  animation: fadeIn 0.2s ease-in-out;
+
 
   /* Shared inner shape styles */
   ::before {
@@ -119,21 +168,12 @@
 
   }
 }
-.container {
-  display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: flex-start; 
-  height: 200vh; 
-  background-color: #f9f9f9; 
-  padding: 20px;
-  box-sizing: border-box;
-  z-index: 1;
-}
+
+
 /* Court container styling */
 .court-container {
   position: relative;
-  width: 675px; /* 550px (court width) + 75px */
+  width: 800px; /* 550px (court width) + 75px */
   height: 940px; /* 815px (court height) + 75px */
   overflow: hidden; /* Ensure overflow is hidden to prevent dragging outside */
   display: flex;
@@ -168,8 +208,8 @@
 /* Attack lines (dashed and extended) */
 .court .attack-line {
   position: absolute;
-  left: -20px; /* Extend beyond the left edge */
-  width: calc(100% + 40px); /* Extend beyond the right edge */
+  left: -40px; /* Extend beyond the left edge */
+  width: calc(100% + 80px); /* Extend beyond the right edge */
   height: 0; /* No height, as it's a border */
   border-top: 2px dashed #000; /* Dashed line */
   z-index: 2; /* Ensure it appears below players */
