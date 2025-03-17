@@ -16,6 +16,11 @@ import html2canvas from 'html2canvas';
   styleUrls: ['./play-creation.component.scss'],
 })
 export class PlayCreationComponent {
+  
+  playTitle: string = 'Untitled Play'; // Default play title
+  annotation: string = '';
+  annotations: string[] = [];
+
   shapes = [
     { type: 'setter', label: 'Setter' },
     { type: 'libero', label: 'Libero' },
@@ -68,8 +73,6 @@ export class PlayCreationComponent {
     this.contextMenuVisible = false;
   }
 
-  annotation: string = '';
-  annotations: string[] = [];
   showZones: boolean = false; // Track whether zones are visible
 
   constructor(private http: HttpClient) {}
@@ -112,62 +115,69 @@ export class PlayCreationComponent {
   }
 
   generatePDF(category: string): void {
-    const courtElement = document.querySelector(
-      '.court-container'
-    ) as HTMLElement;
-
+    const courtElement = document.querySelector('.court-container') as HTMLElement;
+  
     if (!courtElement) {
       console.error('Court container not found!');
       return;
     }
-
+  
     // Use html2canvas to capture the court as an image
     html2canvas(courtElement, { scale: 1 }).then((canvas) => {
       const imgData = canvas.toDataURL('image/jpeg', 0.7); // Compress image to reduce size
       const pdf = new jsPDF('portrait', 'mm', 'a4');
-
+  
       // Calculate dimensions to fit the image into the PDF
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const imgWidth = pdfWidth - 20; // Leave some margin
       const imgHeight = (canvas.height / canvas.width) * imgWidth; // Maintain aspect ratio
-
-      // Center the image on the PDF
-      const xOffset = (pdfWidth - imgWidth) / 2;
-      const yOffset = 20; // Leave some margin at the top
-
+  
+      // Add the play title at the top of the first page
+      pdf.setFontSize(16);
+      pdf.text(this.playTitle, pdfWidth / 2, 10, { align: 'center' });
+  
       // Add the court image to the PDF
+      const xOffset = (pdfWidth - imgWidth) / 2;
+      const yOffset = 20; // Leave some margin below the title
       pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
-
-      // Add category at the bottom of the page
+  
+      // Add category at the bottom of the first page
       pdf.setFontSize(12);
       pdf.text(`Category: ${category}`, 10, pdfHeight - 10);
-
+  
       // Add a new page for annotations
       pdf.addPage();
+  
+      // Add the play title at the top of the second page
       pdf.setFontSize(16);
-      pdf.text('Annotations', pdfWidth / 2, 20, { align: 'center' });
-
+      pdf.text(this.playTitle, pdfWidth / 2, 10, { align: 'center' });
+  
       // Add annotations
-      let annotationY = 30; // Start below the title
       pdf.setFontSize(12);
+      let annotationY = 20; // Start below the title
       this.annotations.forEach((annotation, index) => {
         if (annotationY > pdfHeight - 20) {
           pdf.addPage();
+          pdf.setFontSize(16);
+          pdf.text(this.playTitle, pdfWidth / 2, 10, { align: 'center' }); // Add title to new page
           annotationY = 20; // Reset Y position for the new page
         }
         pdf.text(`${index + 1}. ${annotation}`, 10, annotationY);
         annotationY += 10; // Line spacing
       });
-
+  
       // Convert PDF to Blob
       const pdfBlob = pdf.output('blob');
-
+  
+      // Use the play title as the filename
+      const filename = `${this.playTitle.replace(/\s+/g, '_')}.pdf`;
+  
       // Send PDF to backend
       const formData = new FormData();
-      formData.append('file', pdfBlob, 'volleyball_play.pdf');
+      formData.append('file', pdfBlob, filename);
       formData.append('category', category);
-
+  
       this.http.post('http://127.0.0.1:5000/uploads', formData).subscribe(
         () => {
           alert('PDF saved successfully!');
