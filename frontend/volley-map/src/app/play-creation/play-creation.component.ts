@@ -11,7 +11,7 @@ import jsPDF from 'jspdf';
   standalone: true,
   imports: [CommonModule, FormsModule, DragDropModule, HttpClientModule],
   templateUrl: './play-creation.component.html',
-  styleUrls: ['./play-creation.component.scss']
+  styleUrls: ['./play-creation.component.scss'],
 })
 export class PlayCreationComponent {
   players = [
@@ -20,13 +20,36 @@ export class PlayCreationComponent {
     { name: '3', position: { x: 250, y: 50 }, zIndex: 1 },
     { name: '4', position: { x: 50, y: 150 }, zIndex: 1 },
     { name: '5', position: { x: 150, y: 150 }, zIndex: 1 },
-    { name: '6', position: { x: 250, y: 150 }, zIndex: 1 }
+    { name: '6', position: { x: 250, y: 150 }, zIndex: 1 },
   ];
+
+  shapes = [
+    { type: 'setter', label: 'Setter' },
+    { type: 'libero', label: 'Libero' },
+    { type: 'oh1', label: 'OH 1' },
+    { type: 'oh2', label: 'OH 2' },
+    { type: 'm1', label: 'M1' },
+    { type: 'm2', label: 'M2' },
+    { type: 'opposite', label: 'Opposite' },
+  ];
+
+  courtShapes: any[] = []; // Store shapes added to the court
+
+  addShape(shape: any): void {
+    console.log('Shape clicked:', shape); // Debugging
+    console.log('Shape type:', shape.type);
+    // Add a new shape to the court at a default position
+    this.courtShapes.push({
+      type: shape.type,
+      position: { x: 250, y: 350 }, // Default position
+      zIndex: 1000,
+    });
+    console.log('Court shapes:', this.courtShapes); // Debugging
+  }
 
   annotation: string = '';
   annotations: string[] = [];
   showZones: boolean = false; // Track whether zones are visible
-
 
   constructor(private http: HttpClient) {}
 
@@ -41,88 +64,90 @@ export class PlayCreationComponent {
     this.showZones = !this.showZones; // Toggle the zone view
   }
 
-onDragMoved(event: any, player: any): void {
-  const courtRect = (event.source.element.nativeElement.parentElement as HTMLElement).getBoundingClientRect();
-  const dragRect = event.source.element.nativeElement.getBoundingClientRect();
+  onDragMoved(event: any, player: any): void {
+    const courtRect = (
+      event.source.element.nativeElement.parentElement as HTMLElement
+    ).getBoundingClientRect();
+    const dragRect = event.source.element.nativeElement.getBoundingClientRect();
 
+    // Temporarily set a high zIndex while dragging
+    player.zIndex = Math.max(...this.players.map((p) => p.zIndex)) + 1;
+  }
 
+  onDragEnded(event: any, player: any): void {
+    const courtRect = (
+      event.source.element.nativeElement.parentElement as HTMLElement
+    ).getBoundingClientRect();
+    const dragRect = event.source.element.nativeElement.getBoundingClientRect();
 
-  // Temporarily set a high zIndex while dragging
-  player.zIndex = Math.max(...this.players.map(p => p.zIndex)) + 1;
-}
-
-onDragEnded(event: any, player: any): void {
-  const courtRect = (event.source.element.nativeElement.parentElement as HTMLElement).getBoundingClientRect();
-  const dragRect = event.source.element.nativeElement.getBoundingClientRect();
-
-  // Update zIndex to ensure the dragged item stays on top after dropping
-  player.zIndex = Math.max(...this.players.map(p => p.zIndex)) + 1;
-}
+    // Update zIndex to ensure the dragged item stays on top after dropping
+    player.zIndex = Math.max(...this.players.map((p) => p.zIndex)) + 1;
+  }
 
   generatePDF(category: string): void {
     const doc = new jsPDF();
-  
+
     // PDF dimensions
     const pdfWidth = 210;
-    const pdfHeight = 297; 
-    const margin = 10; 
-  
+    const pdfHeight = 297;
+    const margin = 10;
+
     // Court dimensions (scaled to fit within the PDF)
-    const courtWidth = 180; 
-    const courtHeight = 270; 
-    const courtAspectRatio = 500 / 750; 
-  
+    const courtWidth = 180;
+    const courtHeight = 270;
+    const courtAspectRatio = 500 / 750;
+
     // Adjust court dimensions to maintain aspect ratio
     let scaledCourtWidth = courtWidth;
     let scaledCourtHeight = courtWidth / courtAspectRatio;
-  
+
     if (scaledCourtHeight > courtHeight) {
       scaledCourtHeight = courtHeight;
       scaledCourtWidth = courtHeight * courtAspectRatio;
     }
-  
+
     // Court position on the PDF (centered)
     const courtX = (pdfWidth - scaledCourtWidth) / 2;
     const courtY = margin;
-  
+
     // Add title
     doc.setFontSize(16);
     doc.text('Volleyball Play', pdfWidth / 2, margin / 2, { align: 'center' });
-  
+
     // Draw court
     doc.setDrawColor(0);
     doc.setLineWidth(0.5);
     doc.rect(courtX, courtY, scaledCourtWidth, scaledCourtHeight);
-  
+
     // Scale players' positions to fit the scaled court
-    const scaleX = scaledCourtWidth / 500; 
-    const scaleY = scaledCourtHeight / 750; 
-  
+    const scaleX = scaledCourtWidth / 500;
+    const scaleY = scaledCourtHeight / 750;
+
     this.players.forEach((player) => {
       const x = courtX + player.position.x * scaleX;
       const y = courtY + player.position.y * scaleY;
-  
+
       // Draw player as a circle
       doc.setFillColor(0, 0, 255);
-      doc.circle(x, y, 3, 'F'); 
-      
+      doc.circle(x, y, 3, 'F');
+
       // Add player name
       doc.setFontSize(10);
       doc.text(player.name, x + 5, y + 2);
     });
-  
+
     // Add category at the bottom of the first page
     const categoryY = courtY + scaledCourtHeight + margin;
     doc.setFontSize(12);
     doc.text(`Category: ${category}`, margin, categoryY);
-  
+
     // Add a new page for annotations
     doc.addPage();
-  
+
     // Add title for annotations
     doc.setFontSize(16);
     doc.text('Annotations', pdfWidth / 2, margin, { align: 'center' });
-  
+
     // Add annotations
     let annotationY = margin + 10; // Start below the title
     doc.setFontSize(12);
@@ -135,15 +160,15 @@ onDragEnded(event: any, player: any): void {
       doc.text(`${index + 1}. ${annotation}`, margin, annotationY);
       annotationY += 10; // Line spacing
     });
-  
+
     // Convert PDF to Blob
     const pdfBlob = doc.output('blob');
-  
+
     // Send PDF to backend
     const formData = new FormData();
     formData.append('file', pdfBlob, 'volleyball_play.pdf');
     formData.append('category', category);
-  
+
     this.http.post('http://127.0.0.1:5000/uploads', formData).subscribe(
       () => {
         alert('PDF saved successfully!');

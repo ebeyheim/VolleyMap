@@ -1,3 +1,15 @@
+<div class="toolbar">
+  <div
+    class="toolbar-item"
+    *ngFor="let shape of shapes"
+    (click)="addShape(shape)"
+
+  >
+    <div class="shape-preview" [ngClass]="shape.type"></div>
+    <span>{{ shape.label }}</span>
+  </div>
+</div>
+
 <div class="container">
   <div class="court-container">
     <div class="court">
@@ -40,6 +52,20 @@
         <div *cdkDragPreview class="player-preview">
           {{ player.name }}
         </div>
+      </div>
+
+      <!-- Shapes -->
+      <div
+        class="shape"
+        *ngFor="let shape of courtShapes"  
+        cdkDragBoundary=".court-container"
+        cdkDrag
+        [style.left.px]="shape.position.x"
+        [style.top.px]="shape.position.y"
+        [style.zIndex]="shape.zIndex"
+        (cdkDragEnded)="onDragEnded($event, shape)"
+      >
+        <div [ngClass]="shape.type"></div>
       </div>
     </div>
   </div>
