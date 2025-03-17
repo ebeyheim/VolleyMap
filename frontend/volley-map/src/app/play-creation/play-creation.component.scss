@@ -426,24 +426,25 @@
 }
 
 /* Save section */
-.save {
+.save-section {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px; /* Space between label, dropdown, and button */
 }
 
-.save label {
+.save-section label {
   font-size: 14px;
 }
 
-.save select {
+.save-section select {
   padding: 10px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.save button {
+.save-section button {
   padding: 10px 20px;
   font-size: 14px;
   background-color: #28a745;
@@ -453,7 +454,7 @@
   cursor: pointer;
 }
 
-.save button:hover {
+.save-section button:hover {
   background-color: #218838;
 }
 
