@@ -17,96 +17,110 @@
 >
   <button (click)="deleteShapeFromContextMenu()">Delete</button>
 </div>
-<div class="container">
-  <div class="court-container">
-    <div class="court">
-      <!-- Attack lines -->
-      <div class="attack-line top"></div>
-      <div class="attack-line bottom"></div>
 
-      <!-- Zone overlay -->
-      <div class="zone-overlay" *ngIf="showZones">
-        <!-- Opponent's court -->
-        <div class="zone zone-1">1</div> 
-        <div class="zone zone-6">6</div>
-        <div class="zone zone-5">5</div>
-        <div class="zone zone-2">2</div>
-        <div class="zone zone-3">3</div>
-        <div class="zone zone-4">4</div>
+<div class="main-container">
+  <!-- Left Section: Court -->
+  <div class="left-section">
+    <!-- Show Zones Button -->
+    <button class="toggle-zones" (click)="toggleZones()">
+      {{ showZones ? "Hide Zones" : "Show Zones" }}
+    </button>
 
-        <!-- Your court -->
-        <div class="zone zone-4">4</div>
-        <div class="zone zone-3">3</div>
-        <div class="zone zone-2">2</div>
-        <div class="zone zone-5">5</div>
-        <div class="zone zone-6">6</div>
-        <div class="zone zone-1">1</div>
-      </div>
+    <!-- Court Container -->
+    <div class="court-container">
+      <div class="court">
+        <!-- Attack lines -->
+        <div class="attack-line top"></div>
+        <div class="attack-line bottom"></div>
 
-      <!-- Players -->
-      <div
-        class="player"
-        *ngFor="let player of players; let i = index"
-        cdkDragBoundary=".court-container"
-        cdkDrag
-        [style.left.px]="player.position.x"
-        [style.top.px]="player.position.y"
-        [style.zIndex]="player.zIndex"
-        (cdkDragMoved)="onDragMoved($event, player)"
-        (cdkDragEnded)="onDragEnded($event, player)"
-      >
-        {{ player.name }}
-        <div *cdkDragPreview class="player-preview">
-          {{ player.name }}
+        <!-- Zone overlay -->
+        <div class="zone-overlay" *ngIf="showZones">
+          <!-- Opponent's court -->
+          <div class="zone zone-1">1</div>
+          <div class="zone zone-6">6</div>
+          <div class="zone zone-5">5</div>
+          <div class="zone zone-2">2</div>
+          <div class="zone zone-3">3</div>
+          <div class="zone zone-4">4</div>
+
+          <!-- Your court -->
+          <div class="zone zone-4">4</div>
+          <div class="zone zone-3">3</div>
+          <div class="zone zone-2">2</div>
+          <div class="zone zone-5">5</div>
+          <div class="zone zone-6">6</div>
+          <div class="zone zone-1">1</div>
         </div>
-      </div>
 
-      <!-- Shapes -->
-      <div
-        class="shape"
-        *ngFor="let shape of courtShapes"
-        cdkDragBoundary=".court-container"
-        cdkDrag
-        [cdkDragData]="shape"
-        [style.left.px]="shape.position.x"
-        [style.top.px]="shape.position.y"
-        [style.zIndex]="shape.zIndex"
-        (cdkDragEnded)="onDragEnded($event, shape)"
-        (contextmenu)="onRightClick($event, shape)"
-      >
-        <div [ngClass]="shape.type"></div>
+        <!-- Players -->
+        <div
+          class="player"
+          *ngFor="let player of players; let i = index"
+          cdkDragBoundary=".court-container"
+          cdkDrag
+          [style.left.px]="player.position.x"
+          [style.top.px]="player.position.y"
+          [style.zIndex]="player.zIndex"
+          (cdkDragMoved)="onDragMoved($event, player)"
+          (cdkDragEnded)="onDragEnded($event, player)"
+        >
+          {{ player.name }}
+          <div *cdkDragPreview class="player-preview">
+            {{ player.name }}
+          </div>
+        </div>
+
+        <!-- Shapes -->
+        <div
+          class="shape"
+          *ngFor="let shape of courtShapes"
+          cdkDragBoundary=".court-container"
+          cdkDrag
+          [cdkDragData]="shape"
+          [style.left.px]="shape.position.x"
+          [style.top.px]="shape.position.y"
+          [style.zIndex]="shape.zIndex"
+          (cdkDragEnded)="onDragEnded($event, shape)"
+          (contextmenu)="onRightClick($event, shape)"
+        >
+          <div [ngClass]="shape.type"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Toggle button -->
-  <button class="toggle-zones" (click)="toggleZones()">
-    {{ showZones ? "Hide Zones" : "Show Zones" }}
-  </button>
-
-  <div class="annotations">
-    <input
-      type="text"
-      placeholder="Add annotation"
-      [(ngModel)]="annotation"
-      (keydown.enter)="addAnnotation()"
-    />
-    <button (click)="addAnnotation()">Add</button>
-  </div>
-
-  <div *ngFor="let note of annotations" class="annotation">
-    {{ note }}
-  </div>
-
-  <div class="save">
-    <label for="category">Select Category:</label>
-    <select id="category" #category>
-      <option value="offense">Offense</option>
-      <option value="defense">Defense</option>
-      <option value="serving">Serving</option>
-      <option value="general">General</option>
-      <option value="Uncategorized">Uncategorized</option>
-    </select>
-    <button (click)="generatePDF(category.value)">Save as PDF</button>
+  <!-- Right Section: Annotations and Save -->
+  <div class="right-section">
+    <!-- Save Section -->
+    <div class="save-section">
+      <label for="category">Select Category:</label>
+      <select id="category" #category>
+        <option value="offense">Offense</option>
+        <option value="defense">Defense</option>
+        <option value="serving">Serving</option>
+        <option value="general">General</option>
+        <option value="Uncategorized">Uncategorized</option>
+      </select>
+      <button (click)="generatePDF(category.value)">Save as PDF</button>
+    </div>
+    <!-- Annotations Section -->
+    <div class="container">
+      <div class="title">Annotations</div>
+      <div class="frame">
+        <div class="annotations">
+          <input
+            type="text"
+            placeholder="Add annotation"
+            [(ngModel)]="annotation"
+            (keydown.enter)="addAnnotation()"
+          />
+          <button (click)="addAnnotation()">Add</button>
+        </div>
+        <div *ngFor="let note of annotations" class="annotation">
+          {{ note }}
+        </div>
+        <div class="line"></div>
+      </div>
+    </div>
   </div>
 </div>

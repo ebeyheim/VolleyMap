@@ -1,181 +1,28 @@
-.container {
+.main-container {
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: flex-start; 
-  background-color: #f9f9f9; 
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px; /* Space between court and annotations */
   padding: 20px;
-  height: auto;
+  height: 100vh;
   box-sizing: border-box;
-  z-index: 1;
 }
 
-.context-menu {
-  position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
-  padding: 10px;
-  border-radius: 5px;
-  animation: fadeIn 0.2s ease-in-out;
-
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.context-menu button {
-  background: none;
-  border: none;
-  color: #f44336; /* Red color for delete */
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.context-menu button:hover {
-  font-weight: bold;
-}
-
-.toolbar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 80px;
-  background-color: #f0f0f0;
-  border-right: 1px solid #ccc;
+/* Left section: Court and Show Zones button */
+.left-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-
-  .toolbar-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-    cursor: pointer;
-
-    .shape-preview {
-      width: 50px; /* Outer frame width */
-      height: 50px; /* Outer frame height */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-
-      /* Shared inner shape styles */
-      &::before {
-        content: '';
-        display: block;
-        width: 50px; /* Inner shape width */
-        height: 50px; /* Inner shape height */
-        border-radius: 10px; /* Rounded edges */
-      }
-
-      /* Setter (triangle) */
-      &.setter::before {
-        width: 0;
-        height: 0;
-        border-left: 20px solid transparent;
-        border-right: 20px solid transparent;
-        border-bottom: 40px solid #1E1E1E; /* Dark gray color */
-        border-radius: 0; /* No rounded edges for triangle */
-      }
-
-      /* Libero (circle) */
-      &.libero::before {
-        border-radius: 50%; /* Makes it a circle */
-        background-color: #1E1E1E; /* Dark gray color */
-
-      }
-
-      /* OH1, OH2, M1, M2, Opposite (squares) */
-      &.oh1::before,
-      &.oh2::before,
-      &.m1::before,
-      &.m2::before,
-      &.opposite::before {
-        border-radius: 10px; /* Rounded edges for squares */
-        background-color: #1E1E1E; /* Dark gray color */
-
-      }
-    }
-
-    span {
-      font-size: 12px;
-      color: #333;
-    }
-  }
+  gap: 20px; /* Space between the button and court */
 }
 
-.shape {
-  width: 50px; /* Outer frame width */
-  height: 50px; /* Outer frame height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  cursor: grab;
-  animation: fadeIn 0.2s ease-in-out;
-
-
-  /* Shared inner shape styles */
-  ::before {
-    content: '';
-    display: block;
-    width: 50px; /* Inner shape width */
-    height: 50px; /* Inner shape height */
-    border-radius: 10px; /* Rounded edges */
-  }
-
-  /* Setter (triangle) */
-  .setter::before {
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 40px solid #1E1E1E; /* Dark gray color */
-    border-radius: 0; /* No rounded edges for triangle */
-  }
-
-  /* Libero (circle) */
-  .libero::before {
-    border-radius: 50%; /* Makes it a circle */
-    background-color: #1E1E1E; /* Dark gray color */
-
-  }
-
-  /* OH1, OH2, M1, M2, Opposite (squares) */
-  .oh1::before,
-  .oh2::before,
-  .m1::before,
-  .m2::before,
-  .opposite::before {
-    border-radius: 10px; /* Rounded edges for squares */
-    background-color: #1E1E1E; /* Dark gray color */
-
-  }
-}
-
-
-/* Court container styling */
+/* Court container */
 .court-container {
   position: relative;
   width: 800px; /* 550px (court width) + 75px */
   height: 940px; /* 815px (court height) + 75px */
-  overflow: hidden; /* Ensure overflow is hidden to prevent dragging outside */
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -187,9 +34,8 @@
   width: 550px;
   height: 815px;
   border: 1.5px solid #000;
-  background: #FCFFEF;
+  background: #fcffef;
   overflow: visible;
-  margin-top: 20px;
 }
 
 /* Centerline */
@@ -248,7 +94,6 @@
   border: 1px solid rgb(0, 0, 0); /* Optional: Add borders for zones */
   pointer-events: none; /* Prevent interaction */
   z-index: 3; /* Above the court but below players */
-
 }
 
 /* Specific zones for front row (2, 3, 4) */
@@ -279,9 +124,8 @@
   grid-row: 4; /* Place in the fourth row */
 }
 
-/* Toggle button */
+/* Toggle Zones button */
 .toggle-zones {
-  margin-top: 20px;
   padding: 10px 20px;
   font-size: 14px;
   background-color: #007bff;
@@ -293,6 +137,159 @@
 
 .toggle-zones:hover {
   background-color: #0056b3;
+}
+
+.context-menu {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  padding: 10px;
+  border-radius: 5px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.context-menu button {
+  background: none;
+  border: none;
+  color: #f44336; /* Red color for delete */
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.context-menu button:hover {
+  font-weight: bold;
+}
+
+.toolbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 80px;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.toolbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.shape-preview {
+  width: 50px; /* Outer frame width */
+  height: 50px; /* Outer frame height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Shared inner shape styles */
+.shape-preview::before {
+  content: '';
+  display: block;
+  width: 50px; /* Inner shape width */
+  height: 50px; /* Inner shape height */
+  border-radius: 10px; /* Rounded edges */
+}
+
+/* Setter (triangle) */
+.shape-preview.setter::before {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 40px solid #1E1E1E; /* Dark gray color */
+  border-radius: 0; /* No rounded edges for triangle */
+}
+
+/* Libero (circle) */
+.shape-preview.libero::before {
+  border-radius: 50%; /* Makes it a circle */
+  background-color: #1E1E1E; /* Dark gray color */
+}
+
+/* OH1, OH2, M1, M2, Opposite (squares) */
+.shape-preview.oh1::before,
+.shape-preview.oh2::before,
+.shape-preview.m1::before,
+.shape-preview.m2::before,
+.shape-preview.opposite::before {
+  border-radius: 10px; /* Rounded edges for squares */
+  background-color: #1E1E1E; /* Dark gray color */
+}
+
+span {
+  font-size: 12px;
+  color: #333;
+}
+
+.shape {
+  width: 50px; /* Outer frame width */
+  height: 50px; /* Outer frame height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  cursor: grab;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Shared inner shape styles */
+.shape::before {
+  content: '';
+  display: block;
+  width: 50px; /* Inner shape width */
+  height: 50px; /* Inner shape height */
+  border-radius: 10px; /* Rounded edges */
+}
+
+/* Setter (triangle) */
+.shape.setter::before {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 40px solid #1E1E1E; /* Dark gray color */
+  border-radius: 0; /* No rounded edges for triangle */
+}
+
+/* Libero (circle) */
+.shape.libero::before {
+  border-radius: 50%; /* Makes it a circle */
+  background-color: #1E1E1E; /* Dark gray color */
+}
+
+/* OH1, OH2, M1, M2, Opposite (squares) */
+.shape.oh1::before,
+.shape.oh2::before,
+.shape.m1::before,
+.shape.m2::before,
+.shape.opposite::before {
+  border-radius: 10px; /* Rounded edges for squares */
+  background-color: #1E1E1E; /* Dark gray color */
 }
 
 /* Player styling */
@@ -318,11 +315,77 @@
   display: none; /* Hide the placeholder to allow overlapping */
 }
 
-/* Annotations  */
-.annotations {
-  margin-top: 20px;
+/* Right section: Annotations and Save */
+.right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px; /* Space between annotations and save section */
+}
+
+/* Annotations container */
+.annotations-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* Main container for annotations */
+.container {
+  width: 400px;
+  min-height: 600px;
+  background-color: #ffffff;
+  border: 1px solid #8d8d8d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.container:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.title {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: #000000;
+  margin: 10px 0 20px 0;
   text-align: center;
-  width: 100%; 
+}
+
+/* Frame for annotations and save section */
+.frame {
+  width: 360px;
+  min-height: 512px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding-top: 10px;
+}
+
+/* Line separator */
+.line {
+  width: 100%;
+  height: 1px;
+  background-color: #e5e5e5;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.line:hover {
+  background-color: #d0d0d0;
+  cursor: text;
+}
+
+/* Annotations input and button */
+.annotations {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .annotations input {
@@ -330,8 +393,7 @@
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 300px;
-  margin-right: 10px;
+  width: 240px;
 }
 
 .annotations button {
@@ -350,31 +412,30 @@
 
 /* Individual annotation styling */
 .annotation {
-  margin: 5px 0;
   font-size: 14px;
   color: #333;
 }
 
 /* Save section */
-.save {
-  margin-top: 20px;
-  text-align: center;
+.save-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px; /* Space between label, dropdown, and button */
 }
 
-.save label {
+.save-section label {
   font-size: 14px;
-  margin-right: 10px;
 }
 
-.save select {
+.save-section select {
   padding: 10px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-right: 10px;
 }
 
-.save button {
+.save-section button {
   padding: 10px 20px;
   font-size: 14px;
   background-color: #28a745;
@@ -384,6 +445,18 @@
   cursor: pointer;
 }
 
-.save button:hover {
+.save-section button:hover {
   background-color: #218838;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 420px) {
+  .container {
+    width: 100%;
+    margin: 0 10px;
+  }
+
+  .frame {
+    width: 90%;
+  }
 }
