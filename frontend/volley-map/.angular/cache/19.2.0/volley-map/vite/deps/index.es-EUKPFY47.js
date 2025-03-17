@@ -6446,9 +6446,9 @@ var Element = class _Element {
     this.document = document2;
     this.node = node2;
     this.captureTextNodes = captureTextNodes;
-    this.attributes = {};
-    this.styles = {};
-    this.stylesSpecificity = {};
+    this.attributes = /* @__PURE__ */ Object.create(null);
+    this.styles = /* @__PURE__ */ Object.create(null);
+    this.stylesSpecificity = /* @__PURE__ */ Object.create(null);
     this.animationFrozen = false;
     this.animationFrozenValue = "";
     this.parent = null;
@@ -8730,7 +8730,7 @@ var FontElement = class extends Element {
   constructor(document2, node2, captureTextNodes) {
     super(document2, node2, captureTextNodes);
     this.type = "font";
-    this.glyphs = {};
+    this.glyphs = /* @__PURE__ */ Object.create(null);
     this.horizAdvX = this.getAttribute("horiz-adv-x").getNumber();
     var {
       definitions
@@ -8757,7 +8757,7 @@ var FontElement = class extends Element {
             this.isRTL = true;
             this.isArabic = true;
             if (typeof this.glyphs[glyph.unicode] === "undefined") {
-              this.glyphs[glyph.unicode] = {};
+              this.glyphs[glyph.unicode] = /* @__PURE__ */ Object.create(null);
             }
             this.glyphs[glyph.unicode][glyph.arabicForm] = glyph;
           } else {
@@ -10165,9 +10165,9 @@ var Document = class _Document {
       anonymousCrossOrigin
     } = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
     this.canvg = canvg;
-    this.definitions = {};
-    this.styles = {};
-    this.stylesSpecificity = {};
+    this.definitions = /* @__PURE__ */ Object.create(null);
+    this.styles = /* @__PURE__ */ Object.create(null);
+    this.stylesSpecificity = /* @__PURE__ */ Object.create(null);
     this.images = [];
     this.fonts = [];
     this.emSizeStack = [];
@@ -10517,4 +10517,4 @@ svg-pathdata/lib/SVGPathData.module.js:
   PERFORMANCE OF THIS SOFTWARE.
   ***************************************************************************** *)
 */
-//# sourceMappingURL=index.es-TSPKTDZH.js.map
+//# sourceMappingURL=index.es-EUKPFY47.js.map

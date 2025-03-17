@@ -53,22 +53,7 @@
         </div>
 
         <!-- Players -->
-        <div
-          class="player"
-          *ngFor="let player of players; let i = index"
-          cdkDragBoundary=".court-container"
-          cdkDrag
-          [style.left.px]="player.position.x"
-          [style.top.px]="player.position.y"
-          [style.zIndex]="player.zIndex"
-          (cdkDragMoved)="onDragMoved($event, player)"
-          (cdkDragEnded)="onDragEnded($event, player)"
-        >
-          {{ player.name }}
-          <div *cdkDragPreview class="player-preview">
-            {{ player.name }}
-          </div>
-        </div>
+        
 
         <!-- Shapes -->
         <div

@@ -300,30 +300,6 @@
 }
 
 
-/* Player styling */
-.player {
-  position: absolute; 
-  width: 50px;
-  height: 50px;
-  background-color: blue;
-  color: white;
-  text-align: center;
-  line-height: 50px;
-  border-radius: 50%;
-  cursor: grab;
-  z-index: 10;
-  transform: translateZ(0); /* Force a new stacking context */
-}
-
-.player.cdk-drag-preview {
-  z-index: 1000; /* Ensure the dragged player is above all other elements */
-}
-
-.player.cdk-drag-placeholder {
-  display: none; /* Hide the placeholder to allow overlapping */
-}
-
-
 /* Right section: Annotations and Save */
 .right-section {
   display: flex;

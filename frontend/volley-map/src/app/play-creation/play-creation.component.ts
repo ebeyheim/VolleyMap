@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
 import { HostListener } from '@angular/core';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-play-creation',
@@ -15,15 +16,6 @@ import { HostListener } from '@angular/core';
   styleUrls: ['./play-creation.component.scss'],
 })
 export class PlayCreationComponent {
-  players = [
-    { name: '1', position: { x: 50, y: 50 }, zIndex: 1 },
-    { name: '2', position: { x: 150, y: 50 }, zIndex: 1 },
-    { name: '3', position: { x: 250, y: 50 }, zIndex: 1 },
-    { name: '4', position: { x: 50, y: 150 }, zIndex: 1 },
-    { name: '5', position: { x: 150, y: 150 }, zIndex: 1 },
-    { name: '6', position: { x: 250, y: 150 }, zIndex: 1 },
-  ];
-
   shapes = [
     { type: 'setter', label: 'Setter' },
     { type: 'libero', label: 'Libero' },
@@ -98,112 +90,91 @@ export class PlayCreationComponent {
       event.source.element.nativeElement.parentElement as HTMLElement
     ).getBoundingClientRect();
     const dragRect = event.source.element.nativeElement.getBoundingClientRect();
-
-    // Temporarily set a high zIndex while dragging
-    player.zIndex = Math.max(...this.players.map((p) => p.zIndex)) + 1;
   }
 
-  onDragEnded(event: any, player: any): void {
-    const courtRect = (
-      event.source.element.nativeElement.parentElement as HTMLElement
-    ).getBoundingClientRect();
+  onDragEnded(event: any, shape: any): void {
+    const courtElement = event.source.element.nativeElement.parentElement as HTMLElement;
+    const courtRect = courtElement.getBoundingClientRect();
     const dragRect = event.source.element.nativeElement.getBoundingClientRect();
-
-    // Update zIndex to ensure the dragged item stays on top after dropping
-    player.zIndex = Math.max(...this.players.map((p) => p.zIndex)) + 1;
+  
+    const newX = dragRect.left - courtRect.left;
+    const newY = dragRect.top - courtRect.top;
+  
+    shape.position.x = newX;
+    shape.position.y = newY;
+  
+    shape.zIndex = Math.max(...this.courtShapes.map((s) => s.zIndex)) + 1;
+  
+    // Reset the drag position to avoid visual glitches
+    event.source.reset();
+  
+    console.log(`Shape dropped at: (${newX}, ${newY})`);
   }
 
   generatePDF(category: string): void {
-    const doc = new jsPDF();
+    const courtElement = document.querySelector(
+      '.court-container'
+    ) as HTMLElement;
 
-    // PDF dimensions
-    const pdfWidth = 210;
-    const pdfHeight = 297;
-    const margin = 10;
-
-    // Court dimensions (scaled to fit within the PDF)
-    const courtWidth = 180;
-    const courtHeight = 270;
-    const courtAspectRatio = 500 / 750;
-
-    // Adjust court dimensions to maintain aspect ratio
-    let scaledCourtWidth = courtWidth;
-    let scaledCourtHeight = courtWidth / courtAspectRatio;
-
-    if (scaledCourtHeight > courtHeight) {
-      scaledCourtHeight = courtHeight;
-      scaledCourtWidth = courtHeight * courtAspectRatio;
+    if (!courtElement) {
+      console.error('Court container not found!');
+      return;
     }
 
-    // Court position on the PDF (centered)
-    const courtX = (pdfWidth - scaledCourtWidth) / 2;
-    const courtY = margin;
+    // Use html2canvas to capture the court as an image
+    html2canvas(courtElement, { scale: 1 }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/jpeg', 0.7); // Compress image to reduce size
+      const pdf = new jsPDF('portrait', 'mm', 'a4');
 
-    // Add title
-    doc.setFontSize(16);
-    doc.text('Volleyball Play', pdfWidth / 2, margin / 2, { align: 'center' });
+      // Calculate dimensions to fit the image into the PDF
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth - 20; // Leave some margin
+      const imgHeight = (canvas.height / canvas.width) * imgWidth; // Maintain aspect ratio
 
-    // Draw court
-    doc.setDrawColor(0);
-    doc.setLineWidth(0.5);
-    doc.rect(courtX, courtY, scaledCourtWidth, scaledCourtHeight);
+      // Center the image on the PDF
+      const xOffset = (pdfWidth - imgWidth) / 2;
+      const yOffset = 20; // Leave some margin at the top
 
-    // Scale players' positions to fit the scaled court
-    const scaleX = scaledCourtWidth / 500;
-    const scaleY = scaledCourtHeight / 750;
+      // Add the court image to the PDF
+      pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
 
-    this.players.forEach((player) => {
-      const x = courtX + player.position.x * scaleX;
-      const y = courtY + player.position.y * scaleY;
+      // Add category at the bottom of the page
+      pdf.setFontSize(12);
+      pdf.text(`Category: ${category}`, 10, pdfHeight - 10);
 
-      // Draw player as a circle
-      doc.setFillColor(0, 0, 255);
-      doc.circle(x, y, 3, 'F');
+      // Add a new page for annotations
+      pdf.addPage();
+      pdf.setFontSize(16);
+      pdf.text('Annotations', pdfWidth / 2, 20, { align: 'center' });
 
-      // Add player name
-      doc.setFontSize(10);
-      doc.text(player.name, x + 5, y + 2);
+      // Add annotations
+      let annotationY = 30; // Start below the title
+      pdf.setFontSize(12);
+      this.annotations.forEach((annotation, index) => {
+        if (annotationY > pdfHeight - 20) {
+          pdf.addPage();
+          annotationY = 20; // Reset Y position for the new page
+        }
+        pdf.text(`${index + 1}. ${annotation}`, 10, annotationY);
+        annotationY += 10; // Line spacing
+      });
+
+      // Convert PDF to Blob
+      const pdfBlob = pdf.output('blob');
+
+      // Send PDF to backend
+      const formData = new FormData();
+      formData.append('file', pdfBlob, 'volleyball_play.pdf');
+      formData.append('category', category);
+
+      this.http.post('http://127.0.0.1:5000/uploads', formData).subscribe(
+        () => {
+          alert('PDF saved successfully!');
+          this.annotations = []; // Clear annotations after saving
+        },
+        (error) => console.error('Error saving PDF:', error)
+      );
     });
-
-    // Add category at the bottom of the first page
-    const categoryY = courtY + scaledCourtHeight + margin;
-    doc.setFontSize(12);
-    doc.text(`Category: ${category}`, margin, categoryY);
-
-    // Add a new page for annotations
-    doc.addPage();
-
-    // Add title for annotations
-    doc.setFontSize(16);
-    doc.text('Annotations', pdfWidth / 2, margin, { align: 'center' });
-
-    // Add annotations
-    let annotationY = margin + 10; // Start below the title
-    doc.setFontSize(12);
-    this.annotations.forEach((annotation, index) => {
-      if (annotationY > pdfHeight - margin) {
-        // If the current page is full, add a new page
-        doc.addPage();
-        annotationY = margin; // Reset Y position for the new page
-      }
-      doc.text(`${index + 1}. ${annotation}`, margin, annotationY);
-      annotationY += 10; // Line spacing
-    });
-
-    // Convert PDF to Blob
-    const pdfBlob = doc.output('blob');
-
-    // Send PDF to backend
-    const formData = new FormData();
-    formData.append('file', pdfBlob, 'volleyball_play.pdf');
-    formData.append('category', category);
-
-    this.http.post('http://127.0.0.1:5000/uploads', formData).subscribe(
-      () => {
-        alert('PDF saved successfully!');
-        this.annotations = []; // Clear annotations after saving
-      },
-      (error) => console.error('Error saving PDF:', error)
-    );
   }
 }
