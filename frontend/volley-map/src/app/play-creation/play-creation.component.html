@@ -4,8 +4,9 @@
     *ngFor="let shape of shapes"
     (click)="addShape(shape)"
   >
-    <div class="shape-preview" [ngClass]="shape.type"></div>
-    <span>{{ shape.label }}</span>
+    <div class="shape-preview" [ngClass]="shape.type">
+      <div class="shape-label">{{ shape.label }}</div>
+    </div>
   </div>
 </div>
 <!-- Custom Context Menu -->
@@ -56,6 +57,7 @@
         <div
           class="shape"
           *ngFor="let shape of courtShapes"
+          [ngClass]="shape.type"
           cdkDragBoundary=".court-container"
           cdkDrag
           [cdkDragData]="shape"
@@ -65,7 +67,7 @@
           (cdkDragEnded)="onDragEnded($event, shape)"
           (contextmenu)="onRightClick($event, shape)"
         >
-          <div [ngClass]="shape.type"></div>
+          <div class="shape-label">{{ shape.label || "Default" }}</div>
         </div>
       </div>
     </div>

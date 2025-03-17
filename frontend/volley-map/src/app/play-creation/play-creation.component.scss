@@ -2,11 +2,12 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 40px; /* Space between court and annotations */
   padding: 20px;
   height: 100vh;
   box-sizing: border-box;
+  overflow: hidden; /* Ensure no overflow */
 }
 
 /* Left section: Court and Show Zones button */
@@ -15,13 +16,15 @@
   flex-direction: column;
   align-items: center;
   gap: 20px; /* Space between the button and court */
+  height: 100%; /* Full height */
+  justify-content: center; /* Center content vertically */
 }
 
 /* Court container */
 .court-container {
   position: relative;
-  width: 800px; /* 550px (court width) + 75px */
-  height: 940px; /* 815px (court height) + 75px */
+  width: 625px; /* 550px (court width) + 75px */
+  height: 890px; /* 815px (court height) + 75px */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -40,7 +43,7 @@
 
 /* Centerline */
 .court::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%; /* Center of the court */
   left: -60px; /* Extend beyond the left edge */
@@ -94,7 +97,6 @@
   border: 1px solid rgb(0, 0, 0); /* Optional: Add borders for zones */
   pointer-events: none; /* Prevent interaction */
   z-index: 3; /* Above the court but below players */
-
 }
 
 /* Specific zones for front row (2, 3, 4) */
@@ -146,11 +148,10 @@
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
+  z-index: 10000;
   padding: 10px;
   border-radius: 5px;
   animation: fadeIn 0.2s ease-in-out;
-
 }
 
 @keyframes fadeIn {
@@ -208,28 +209,27 @@
 
       /* Shared inner shape styles */
       &::before {
-        content: '';
+        content: "";
         display: block;
         width: 50px; /* Inner shape width */
         height: 50px; /* Inner shape height */
-        border-radius: 10px; /* Rounded edges */
+        border-radius: 5px; /* Rounded edges */
       }
 
       /* Setter (triangle) */
       &.setter::before {
         width: 0;
         height: 0;
-        border-left: 20px solid transparent;
-        border-right: 20px solid transparent;
-        border-bottom: 40px solid #1E1E1E; /* Dark gray color */
+        border-left: 25px solid transparent;
+        border-right: 25px solid transparent;
+        border-bottom: 45px solid #1e1e1e; /* Dark gray color */
         border-radius: 0; /* No rounded edges for triangle */
       }
 
       /* Libero (circle) */
       &.libero::before {
         border-radius: 50%; /* Makes it a circle */
-        background-color: #1E1E1E; /* Dark gray color */
-
+        background-color: #1e1e1e; /* Dark gray color */
       }
 
       /* OH1, OH2, M1, M2, Opposite (squares) */
@@ -238,15 +238,44 @@
       &.m1::before,
       &.m2::before,
       &.opposite::before {
-        border-radius: 10px; /* Rounded edges for squares */
-        background-color: #1E1E1E; /* Dark gray color */
-
+        border-radius: 5px; /* Rounded edges for squares */
+        background-color: #1e1e1e; /* Dark gray color */
       }
-    }
 
-    span {
-      font-size: 12px;
-      color: #333;
+      /* X (cross) */
+      &.x::before {
+        content: "X";
+        font-size: 60px;
+        color: #1e1e1e; /* Dark gray color */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* O (hollow circle) */
+      &.o::before {
+        border-radius: 50%; /* Makes it a circle */
+        border: 2px solid #1e1e1e; /* Dark gray color */
+        background-color: transparent; /* Hollow circle */
+      }
+
+      .shape-label {
+        position: absolute; /* Position the label inside the shape */
+        color: white; /* Ensure the text is visible */
+        font-size: 12px; /* Adjust font size */
+        text-align: center; /* Center the text */
+        width: 100%; /* Match the shape's width */
+        height: 100%; /* Match the shape's height */
+        display: flex;
+        align-items: center; /* Center vertically */
+        justify-content: center; /* Center horizontally */
+        pointer-events: none; /* Prevent interaction with the label */
+        z-index: 2; /* Ensure it appears above the shape */
+      }
+      /* Adjust label for triangle (setter) */
+      &.setter .shape-label {
+        transform: translateY(5px); /* Shift the label downward */
+      }
     }
   }
 }
@@ -257,49 +286,83 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
+  position: absolute; /* Required for dynamic positioning */
   cursor: grab;
   animation: fadeIn 0.2s ease-in-out;
 
-
   /* Shared inner shape styles */
-  ::before {
-    content: '';
+  &::before {
+    content: "";
     display: block;
     width: 50px; /* Inner shape width */
     height: 50px; /* Inner shape height */
-    border-radius: 10px; /* Rounded edges */
+    border-radius: 5px; /* Rounded edges for squares */
+    z-index: 1; /* Ensure it appears below the label */
   }
 
   /* Setter (triangle) */
-  .setter::before {
+  &.setter::before {
     width: 0;
     height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 40px solid #1E1E1E; /* Dark gray color */
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 45px solid #1e1e1e; /* Dark gray color */
     border-radius: 0; /* No rounded edges for triangle */
   }
 
   /* Libero (circle) */
-  .libero::before {
+  &.libero::before {
     border-radius: 50%; /* Makes it a circle */
-    background-color: #1E1E1E; /* Dark gray color */
-
+    background-color: #1e1e1e; /* Dark gray color */
   }
 
   /* OH1, OH2, M1, M2, Opposite (squares) */
-  .oh1::before,
-  .oh2::before,
-  .m1::before,
-  .m2::before,
-  .opposite::before {
-    border-radius: 10px; /* Rounded edges for squares */
-    background-color: #1E1E1E; /* Dark gray color */
+  &.oh1::before,
+  &.oh2::before,
+  &.m1::before,
+  &.m2::before,
+  &.opposite::before {
+    border-radius: 5px; /* Rounded edges for squares */
+    background-color: #1e1e1e; /* Dark gray color */
+  }
 
+  /* X (cross) */
+  &.x::before {
+    content: "X";
+    font-size: 60px;
+    color: #1e1e1e; /* Dark gray color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* O (hollow circle) */
+  &.o::before {
+    border-radius: 50%; /* Makes it a circle */
+    border: 2px solid #1e1e1e; /* Dark gray color */
+    background-color: transparent; /* Hollow circle */
+  }
+
+  /* Text inside the shape */
+  .shape-label {
+    position: absolute;
+    color: white; /* Ensure the text is white */
+    font-size: 12px; /* Adjust font size */
+    text-align: center;
+    width: 100%; /* Center the text horizontally */
+    height: 100%; /* Center the text vertically */
+    display: flex;
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    z-index: 2; /* Ensure it appears above the shape */
+    pointer-events: none; /* Prevent interaction with the label */
+  }
+
+  /* Adjust label for triangle (setter) */
+  &.setter .shape-label {
+    transform: translateY(5px); /* Shift the label downward for the triangle */
   }
 }
-
 
 /* Right section: Annotations and Save */
 .right-section {
@@ -346,7 +409,7 @@
 
 /* Title styling */
 .title {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 32px;
   font-weight: 600;
   color: #000000;
@@ -443,3 +506,23 @@
     width: 90%;
   }
 }
+
+/* Responsive styles for tablets (max-width: 992px) */
+@media (max-width: 992px) {
+  .main-container {
+    flex-direction: column; /* Stack items vertically */
+    gap: 2rem;
+  }
+
+  .court-container {
+    width: 90%; /* Use percentage for flexible width */
+    height: auto; /* Let height adjust automatically */
+  }
+
+  .court {
+    width: 100%; /* Full width of the container */
+    height: auto; /* Adjust height automatically */
+  }
+}
+
+
