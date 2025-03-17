@@ -94,6 +94,7 @@
   border: 1px solid rgb(0, 0, 0); /* Optional: Add borders for zones */
   pointer-events: none; /* Prevent interaction */
   z-index: 3; /* Above the court but below players */
+
 }
 
 /* Specific zones for front row (2, 3, 4) */
@@ -148,6 +149,7 @@
   padding: 10px;
   border-radius: 5px;
   animation: fadeIn 0.2s ease-in-out;
+
 }
 
 @keyframes fadeIn {
@@ -187,63 +189,65 @@
   padding: 10px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   z-index: 100;
-}
 
-.toolbar-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
-  cursor: pointer;
-}
+  .toolbar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    cursor: pointer;
 
-.shape-preview {
-  width: 50px; /* Outer frame width */
-  height: 50px; /* Outer frame height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
+    .shape-preview {
+      width: 50px; /* Outer frame width */
+      height: 50px; /* Outer frame height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
 
-/* Shared inner shape styles */
-.shape-preview::before {
-  content: '';
-  display: block;
-  width: 50px; /* Inner shape width */
-  height: 50px; /* Inner shape height */
-  border-radius: 10px; /* Rounded edges */
-}
+      /* Shared inner shape styles */
+      &::before {
+        content: '';
+        display: block;
+        width: 50px; /* Inner shape width */
+        height: 50px; /* Inner shape height */
+        border-radius: 10px; /* Rounded edges */
+      }
 
-/* Setter (triangle) */
-.shape-preview.setter::before {
-  width: 0;
-  height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 40px solid #1E1E1E; /* Dark gray color */
-  border-radius: 0; /* No rounded edges for triangle */
-}
+      /* Setter (triangle) */
+      &.setter::before {
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 40px solid #1E1E1E; /* Dark gray color */
+        border-radius: 0; /* No rounded edges for triangle */
+      }
 
-/* Libero (circle) */
-.shape-preview.libero::before {
-  border-radius: 50%; /* Makes it a circle */
-  background-color: #1E1E1E; /* Dark gray color */
-}
+      /* Libero (circle) */
+      &.libero::before {
+        border-radius: 50%; /* Makes it a circle */
+        background-color: #1E1E1E; /* Dark gray color */
 
-/* OH1, OH2, M1, M2, Opposite (squares) */
-.shape-preview.oh1::before,
-.shape-preview.oh2::before,
-.shape-preview.m1::before,
-.shape-preview.m2::before,
-.shape-preview.opposite::before {
-  border-radius: 10px; /* Rounded edges for squares */
-  background-color: #1E1E1E; /* Dark gray color */
-}
+      }
 
-span {
-  font-size: 12px;
-  color: #333;
+      /* OH1, OH2, M1, M2, Opposite (squares) */
+      &.oh1::before,
+      &.oh2::before,
+      &.m1::before,
+      &.m2::before,
+      &.opposite::before {
+        border-radius: 10px; /* Rounded edges for squares */
+        background-color: #1E1E1E; /* Dark gray color */
+
+      }
+    }
+
+    span {
+      font-size: 12px;
+      color: #333;
+    }
+  }
 }
 
 .shape {
@@ -255,42 +259,46 @@ span {
   position: absolute;
   cursor: grab;
   animation: fadeIn 0.2s ease-in-out;
+
+
+  /* Shared inner shape styles */
+  ::before {
+    content: '';
+    display: block;
+    width: 50px; /* Inner shape width */
+    height: 50px; /* Inner shape height */
+    border-radius: 10px; /* Rounded edges */
+  }
+
+  /* Setter (triangle) */
+  .setter::before {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid #1E1E1E; /* Dark gray color */
+    border-radius: 0; /* No rounded edges for triangle */
+  }
+
+  /* Libero (circle) */
+  .libero::before {
+    border-radius: 50%; /* Makes it a circle */
+    background-color: #1E1E1E; /* Dark gray color */
+
+  }
+
+  /* OH1, OH2, M1, M2, Opposite (squares) */
+  .oh1::before,
+  .oh2::before,
+  .m1::before,
+  .m2::before,
+  .opposite::before {
+    border-radius: 10px; /* Rounded edges for squares */
+    background-color: #1E1E1E; /* Dark gray color */
+
+  }
 }
 
-/* Shared inner shape styles */
-.shape::before {
-  content: '';
-  display: block;
-  width: 50px; /* Inner shape width */
-  height: 50px; /* Inner shape height */
-  border-radius: 10px; /* Rounded edges */
-}
-
-/* Setter (triangle) */
-.shape.setter::before {
-  width: 0;
-  height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 40px solid #1E1E1E; /* Dark gray color */
-  border-radius: 0; /* No rounded edges for triangle */
-}
-
-/* Libero (circle) */
-.shape.libero::before {
-  border-radius: 50%; /* Makes it a circle */
-  background-color: #1E1E1E; /* Dark gray color */
-}
-
-/* OH1, OH2, M1, M2, Opposite (squares) */
-.shape.oh1::before,
-.shape.oh2::before,
-.shape.m1::before,
-.shape.m2::before,
-.shape.opposite::before {
-  border-radius: 10px; /* Rounded edges for squares */
-  background-color: #1E1E1E; /* Dark gray color */
-}
 
 /* Player styling */
 .player {
@@ -314,6 +322,7 @@ span {
 .player.cdk-drag-placeholder {
   display: none; /* Hide the placeholder to allow overlapping */
 }
+
 
 /* Right section: Annotations and Save */
 .right-section {
@@ -417,25 +426,24 @@ span {
 }
 
 /* Save section */
-.save-section {
+.save {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px; /* Space between label, dropdown, and button */
+  flex-direction: column;
+  gap: 10px;
 }
 
-.save-section label {
+.save label {
   font-size: 14px;
 }
 
-.save-section select {
+.save select {
   padding: 10px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.save-section button {
+.save button {
   padding: 10px 20px;
   font-size: 14px;
   background-color: #28a745;
@@ -445,7 +453,7 @@ span {
   cursor: pointer;
 }
 
-.save-section button:hover {
+.save button:hover {
   background-color: #218838;
 }
 
