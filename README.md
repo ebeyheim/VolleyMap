@@ -18,24 +18,21 @@ VolleyMap is a digital whiteboard and play management system designed specifical
 - Use Angular CDK to provide a robust and interactive design experience.
 - Allow users to add player positions, movements, and annotations directly on a digital court.
 
-  
-## Planned Features
-
 ### Toolbar
 - Toolbar with premade objects the user can drag-and-drop onto the court
 - Item deletion feature
 - Colors
 - Editable text
+  
+## Planned Features
 
 ### Play Organization:
 - Add tags and descriptions for better searchability and organization.
 - Icons/Images for categories
 
-### Enhanced Collaboration:
-- Enable sharing of plays with team members or other coaches.
-- Provide options for exporting plays as PDFs or sharing via links.
-Advanced Features:
-- Storage of different file types to allow for editing.
+### UI
+- Better Colors
+- Organization
 
 ## How to Use
 #### Upload PDFs:
