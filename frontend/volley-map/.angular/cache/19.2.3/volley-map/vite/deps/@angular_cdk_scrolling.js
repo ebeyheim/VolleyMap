@@ -16,10 +16,10 @@ import {
   VIRTUAL_SCROLL_STRATEGY,
   ViewportRuler,
   _fixedSizeVirtualScrollStrategyFactory
-} from "./chunk-FKKW3LUS.js";
-import "./chunk-UXMUVWZD.js";
-import "./chunk-KXPYKLE3.js";
-import "./chunk-TXDUYLVM.js";
+} from "./chunk-OEDG5I67.js";
+import "./chunk-WK5C4KY4.js";
+import "./chunk-RJHLGT3Z.js";
+import "./chunk-S35DAJRX.js";
 export {
   CdkFixedSizeVirtualScroll,
   CdkScrollable,

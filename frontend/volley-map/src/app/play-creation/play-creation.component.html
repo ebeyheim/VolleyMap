@@ -17,6 +17,13 @@
   [style.top.px]="contextMenuPosition.y"
 >
   <button (click)="deleteShapeFromContextMenu()">Delete</button>
+  <label for="colorPicker" class="visually-hidden">Choose a color</label>
+  <input
+    id="colorPicker"
+    type="color"
+    (change)="changeShapeColor($event)"
+    [value]="selectedShape?.color || '#1e1e1e'"
+  />
 </div>
 
 <div class="main-container">
@@ -28,7 +35,7 @@
     </button>
 
     <!-- Court Container -->
-    <div class="court-container">
+    <div class="court-container" s>
       <div class="court">
         <!-- Attack lines -->
         <div class="attack-line top"></div>
@@ -64,6 +71,7 @@
           [style.left.px]="shape.position.x"
           [style.top.px]="shape.position.y"
           [style.zIndex]="shape.zIndex"
+          [style.backgroundColor]="shape.color"
           (cdkDragEnded)="onDragEnded($event, shape)"
           (contextmenu)="onRightClick($event, shape)"
         >

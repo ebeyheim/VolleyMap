@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
-import { HostListener } from '@angular/core';
 import html2canvas from 'html2canvas';
+import { HostListener } from '@angular/core';
+import html2pdf from 'html2pdf.js';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-play-creation',
@@ -19,6 +20,10 @@ export class PlayCreationComponent {
   playTitle: string = 'Untitled Play'; // Default play title
   annotation: string = '';
   annotations: string[] = [];
+  courtShapes: any[] = []; // Store shapes added to the court
+  showZones: boolean = false; // Track whether zones are visible
+
+  constructor(private http: HttpClient) {}
 
   shapes = [
     { type: 'setter', label: 'S' },
@@ -32,8 +37,6 @@ export class PlayCreationComponent {
     { type: 'o', label: ' ' }, // New shape O
   ];
 
-  courtShapes: any[] = []; // Store shapes added to the court
-
   addShape(shape: any): void {
     console.log('Shape clicked:', shape); // Debugging
     console.log('Shape type:', shape.type);
@@ -43,9 +46,24 @@ export class PlayCreationComponent {
       label: shape.label, // Include the label property
       position: { x: 250, y: 350 }, // Default position
       zIndex: 1000,
+      color: '#1e1e1e', // Default color
+
     });
     console.log('Court shapes:', this.courtShapes); // Debugging
   }
+
+  changeShapeColor(event: any): void {
+    if (this.selectedShape) {
+      const newColor = event.target.value; // Get the selected color from the color picker
+      this.selectedShape.color = newColor; // Update the color property of the selected shape
+  
+      // Reassign the courtShapes array to trigger Angular's change detection
+      this.courtShapes = [...this.courtShapes];
+  
+      this.contextMenuVisible = false; // Hide the context menu after changing the color
+    }
+  }
+
 
   // Custom Tooltip
   contextMenuVisible = false;
@@ -75,9 +93,6 @@ export class PlayCreationComponent {
     this.contextMenuVisible = false;
   }
 
-  showZones: boolean = false; // Track whether zones are visible
-
-  constructor(private http: HttpClient) {}
 
   addAnnotation(): void {
     if (this.annotation) {
@@ -117,79 +132,113 @@ export class PlayCreationComponent {
     console.log(`Shape dropped at: (${newX}, ${newY})`);
   }
 
+  
   generatePDF(category: string): void {
-    const courtElement = document.querySelector(
-      '.court-container'
-    ) as HTMLElement;
-
+    const courtElement = document.querySelector('.court-container') as HTMLElement;
+  
     if (!courtElement) {
       console.error('Court container not found!');
       return;
     }
-
-    // Use html2canvas to capture the court as an image
-    html2canvas(courtElement, { scale: 1 }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/jpeg', 0.7); // Compress image to reduce size
-      const pdf = new jsPDF('portrait', 'mm', 'a4');
-
-      // Calculate dimensions to fit the image into the PDF
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pdfWidth - 20; // Leave some margin
-      const imgHeight = (canvas.height / canvas.width) * imgWidth; // Maintain aspect ratio
-
-      // Add the play title at the top of the first page
-      pdf.setFontSize(16);
-      pdf.text(this.playTitle, pdfWidth / 2, 10, { align: 'center' });
-
-      // Add the court image to the PDF
-      const xOffset = (pdfWidth - imgWidth) / 2;
-      const yOffset = 20; // Leave some margin below the title
-      pdf.addImage(imgData, 'JPEG', xOffset, yOffset, imgWidth, imgHeight);
-
-      // Add category at the bottom of the first page
-      pdf.setFontSize(12);
-      pdf.text(`Category: ${category}`, 10, pdfHeight - 10);
-
-      // Add a new page for annotations
-      pdf.addPage();
-
-      // Add the play title at the top of the second page
-      pdf.setFontSize(16);
-      pdf.text(this.playTitle, pdfWidth / 2, 10, { align: 'center' });
-
-      // Add annotations
-      pdf.setFontSize(12);
-      let annotationY = 20; // Start below the title
-      this.annotations.forEach((annotation, index) => {
-        if (annotationY > pdfHeight - 20) {
-          pdf.addPage();
-          pdf.setFontSize(16);
-          pdf.text(this.playTitle, pdfWidth / 2, 10, { align: 'center' }); // Add title to new page
-          annotationY = 20; // Reset Y position for the new page
-        }
-        pdf.text(`${index + 1}. ${annotation}`, 10, annotationY);
-        annotationY += 10; // Line spacing
-      });
-
-      // Convert PDF to Blob
-      const pdfBlob = pdf.output('blob');
-
-      // Use the play title as the filename
-      const filename = `${this.playTitle.replace(/\s+/g, '_')}.pdf`;
-
-      // Send PDF to backend
-      const formData = new FormData();
-      formData.append('file', pdfBlob, filename);
-      formData.append('category', category);
-
-      this.http.post('http://127.0.0.1:5000/uploads', formData).subscribe(
-        () => {
-          alert('PDF saved successfully!');
-          this.annotations = []; // Clear annotations after saving
-        },
-        (error) => console.error('Error saving PDF:', error)
-      );
+  
+    // Create a wrapper for the PDF content
+    const pdfContent = document.createElement('div');
+    pdfContent.style.width = '210mm'; // A4 width
+    pdfContent.style.height = 'auto'; // Allow height to grow for multiple pages
+    pdfContent.style.padding = '20mm'; // Add padding for margins
+    pdfContent.style.boxSizing = 'border-box';
+    pdfContent.style.fontFamily = 'Arial, sans-serif';
+  
+    // Add the play title at the top
+    const titleElement = document.createElement('h1');
+    titleElement.textContent = this.playTitle;
+    titleElement.style.textAlign = 'center';
+    titleElement.style.marginBottom = '10mm';
+    pdfContent.appendChild(titleElement);
+  
+    // Add the category below the title
+    const categoryElement = document.createElement('h3');
+    categoryElement.textContent = `Category: ${category}`;
+    categoryElement.style.textAlign = 'center';
+    categoryElement.style.marginBottom = '20mm';
+    pdfContent.appendChild(categoryElement);
+  
+    // Clone the court element and add it to the PDF content
+    const courtClone = courtElement.cloneNode(true) as HTMLElement;
+    courtClone.style.margin = '0 auto'; // Center the court
+    courtClone.style.width = '100%'; // Scale to fit the page
+    courtClone.style.height = 'auto'; // Maintain aspect ratio
+    pdfContent.appendChild(courtClone);
+  
+    // Add a second page for annotations
+    const annotationsPage = document.createElement('div');
+    annotationsPage.style.width = '210mm'; // A4 width
+    annotationsPage.style.height = '297mm'; // A4 height
+    annotationsPage.style.padding = '20mm'; // Add padding for margins
+    annotationsPage.style.boxSizing = 'border-box';
+    annotationsPage.style.fontFamily = 'Arial, sans-serif';
+  
+    // Add the play title at the top of the annotations page
+    const annotationsTitle = document.createElement('h1');
+    annotationsTitle.textContent = this.playTitle;
+    annotationsTitle.style.textAlign = '';
+    annotationsTitle.style.marginBottom = '20mm'; // Add space below the title
+    annotationsPage.appendChild(annotationsTitle);
+  
+    // Add annotations
+    const annotationsList = document.createElement('div');
+    annotationsList.style.fontSize = '12pt';
+    annotationsList.style.lineHeight = '1.5';
+    annotationsList.style.textAlign = 'left'; // Align annotations to the left
+    annotationsList.style.margin = '0 auto'; // Center the annotations horizontally
+    annotationsList.style.width = '80%'; // Limit the width for better readability
+    this.annotations.forEach((annotation, index) => {
+      const annotationItem = document.createElement('p');
+      annotationItem.textContent = `${index + 1}. ${annotation}`;
+      annotationsList.appendChild(annotationItem);
     });
+    annotationsPage.appendChild(annotationsList);
+  
+    // Append the annotations page to the PDF content
+    pdfContent.appendChild(annotationsPage);
+  
+    // Configure html2pdf.js options
+    const options = {
+      margin: 0,
+      filename: `${this.playTitle.replace(/\s+/g, '_')}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+  
+    // Generate the PDF and upload it to the backend
+    html2pdf()
+      .set(options)
+      .from(pdfContent)
+      .toPdf()
+      .outputPdf('blob') // Get the PDF as a Blob
+      .then((pdfBlob: Blob) => {
+        // Use the play title as the filename
+        const filename = `${this.playTitle.replace(/\s+/g, '_')}.pdf`;
+  
+        // Create FormData to send the PDF and category to the backend
+        const formData = new FormData();
+        formData.append('file', pdfBlob, filename);
+        formData.append('category', category);
+  
+        // Send the PDF to the backend
+        this.http.post('http://127.0.0.1:5000/uploads', formData).subscribe(
+          () => {
+            alert('PDF uploaded successfully!');
+            this.annotations = []; // Clear annotations after saving
+          },
+          (error: any) => {
+            console.error('Error uploading PDF:', error);
+          }
+        );
+      })
+      .catch((error: any) => {
+        console.error('Error generating PDF:', error);
+      });
   }
 }
