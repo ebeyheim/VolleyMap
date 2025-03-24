@@ -8,11 +8,13 @@ import html2canvas from 'html2canvas';
 import { HostListener } from '@angular/core';
 import html2pdf from 'html2pdf.js';
 import { Component } from '@angular/core';
+import { ColorPickerModule } from 'ngx-color-picker';
+
 
 @Component({
   selector: 'app-play-creation',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, DragDropModule, HttpClientModule, ColorPickerModule],
   templateUrl: './play-creation.component.html',
   styleUrls: ['./play-creation.component.scss'],
 })
@@ -22,6 +24,7 @@ export class PlayCreationComponent {
   annotations: string[] = [];
   courtShapes: any[] = []; // Store shapes added to the court
   showZones: boolean = false; // Track whether zones are visible
+  
 
   constructor(private http: HttpClient) {}
 
@@ -40,15 +43,16 @@ export class PlayCreationComponent {
   addShape(shape: any): void {
     console.log('Shape clicked:', shape); // Debugging
     console.log('Shape type:', shape.type);
+  
     // Add a new shape to the court at a default position
     this.courtShapes.push({
       type: shape.type,
       label: shape.label, // Include the label property
       position: { x: 250, y: 350 }, // Default position
       zIndex: 1000,
-      color: '#1e1e1e', // Default color
-
+      color: shape.type === 'x' || shape.type === 'o' ? null : '#1e1e1e', // No color for X and O
     });
+  
     console.log('Court shapes:', this.courtShapes); // Debugging
   }
 
@@ -60,7 +64,18 @@ export class PlayCreationComponent {
       // Reassign the courtShapes array to trigger Angular's change detection
       this.courtShapes = [...this.courtShapes];
   
-      this.contextMenuVisible = false; // Hide the context menu after changing the color
+    }
+  }
+
+  updateShapeColor(newColor: string): void {
+    if (this.selectedShape) {
+      // Update the color property for all shapes except X and O
+      if (this.selectedShape.type !== 'x' && this.selectedShape.type !== 'o') {
+        this.selectedShape.color = newColor;
+      }
+  
+      // Trigger Angular's change detection
+      this.courtShapes = [...this.courtShapes];
     }
   }
 
@@ -72,9 +87,20 @@ export class PlayCreationComponent {
 
   onRightClick(event: MouseEvent, shape: any): void {
     event.preventDefault(); // Prevent the default browser context menu
-    this.contextMenuVisible = true;
-    this.contextMenuPosition = { x: event.clientX, y: event.clientY }; // Set the position of the tooltip
+  
+    // Get the bounding rectangle of the selected shape
+    const shapeElement = event.target as HTMLElement;
+    const shapeRect = shapeElement.getBoundingClientRect();
+  
+    // Calculate the position of the context menu (10px right and 10px above the shape)
+    this.contextMenuPosition = {
+      x: shapeRect.left + shapeRect.width + 10, // 10px to the right of the shape
+      y: shapeRect.top - 10, // 10px above the shape
+    };
+  
+    this.contextMenuVisible = true; // Show the context menu
     this.selectedShape = shape; // Store the selected shape
+    console.log('Context menu position:', this.contextMenuPosition); // Debugging
   }
 
   deleteShapeFromContextMenu(): void {
@@ -88,10 +114,17 @@ export class PlayCreationComponent {
     }
   }
 
-  @HostListener('document:click')
-  hideContextMenu(): void {
-    this.contextMenuVisible = false;
+@HostListener('document:click', ['$event'])
+hideContextMenu(event: MouseEvent): void {
+  const target = event.target as HTMLElement;
+
+  // Check if the click is inside the color picker container
+  if (target.closest('.color-picker-container')) {
+    return; // Do nothing if the click is inside the color picker
   }
+
+  this.contextMenuVisible = false; // Hide the context menu otherwise
+}
 
 
   addAnnotation(): void {

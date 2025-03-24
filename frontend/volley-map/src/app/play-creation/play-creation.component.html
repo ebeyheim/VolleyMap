@@ -16,14 +16,18 @@
   [style.left.px]="contextMenuPosition.x"
   [style.top.px]="contextMenuPosition.y"
 >
+  <div class="color-picker-container">
+    <!-- Colored rectangle for the color picker -->
+    <div
+      class="color-picker-rectangle"
+      [(colorPicker)]="selectedShape.color"
+      [cpPosition]="'right'"
+      [cpOutputFormat]="'hex'"
+      (colorPickerChange)="updateShapeColor($event)"
+      [style.backgroundColor]="selectedShape.color"
+    ></div>
+  </div>
   <button (click)="deleteShapeFromContextMenu()">Delete</button>
-  <label for="colorPicker" class="visually-hidden">Choose a color</label>
-  <input
-    id="colorPicker"
-    type="color"
-    (change)="changeShapeColor($event)"
-    [value]="selectedShape?.color || '#1e1e1e'"
-  />
 </div>
 
 <div class="main-container">
@@ -71,7 +75,10 @@
           [style.left.px]="shape.position.x"
           [style.top.px]="shape.position.y"
           [style.zIndex]="shape.zIndex"
-          [style.backgroundColor]="shape.color"
+          [ngStyle]="{
+            '--setter-color': shape.color,
+            'background-color': shape.type !== 'setter' ? shape.color : null
+          }"
           (cdkDragEnded)="onDragEnded($event, shape)"
           (contextmenu)="onRightClick($event, shape)"
         >
