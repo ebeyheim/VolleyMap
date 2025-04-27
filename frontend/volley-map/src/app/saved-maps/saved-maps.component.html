@@ -13,7 +13,9 @@
         <button class="btn new-category-btn" (click)="createCategory()">
           New Category
         </button>
+        <label for="category-select">Choose a category:</label>
         <select
+          id="category-select"
           class="category-select"
           [(ngModel)]="selectedCategory"
           (change)="filterPlaysByCategory()"
@@ -34,12 +36,16 @@
         [class.selected]="selectedPlays.has(play.id)"
         (click)="togglePlaySelection(play.id)"
       >
-        <div class="play-thumbnail">
-          <img
-            [src]="'http://127.0.0.1:5000/uploads/' + play.file_name"
-            alt="Play Thumbnail"
-          />
-        </div>
+      <div class="play-thumbnail">
+        <img
+          [src]="'http://127.0.0.1:5000/thumbnails/' + play.thumbnail_name"
+          alt="Play Thumbnail"
+          (error)="onThumbnailError(play)"
+        />
+      </div>
+      
+      
+
         <p class="play-title">{{ play.file_name }}</p>
       </div>
     </section>

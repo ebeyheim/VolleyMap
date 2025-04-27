@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify, send_file, render_template
 import mysql.connector
 import os
-import time
 from flask_cors import CORS
+import fitz  # PyMuPDF
+
 
 app = Flask(__name__)
 CORS(app)  # CORS for all routes
@@ -41,15 +42,32 @@ def upload_file():
         if file.filename == '':
             return jsonify({"error": "No selected file"}), 400
         if file and file.filename.endswith('.pdf'):
-            # Ensure the category folder exists
-            category_path = os.path.join(app.config['UPLOAD_FOLDER'], category)
-            if not os.path.exists(category_path):
-                os.makedirs(category_path)
+            # Ensure the uploads folder exists
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.makedirs(app.config['UPLOAD_FOLDER'])
 
-            # Save the file in the category folder
-            unique_filename = f"{os.path.splitext(file.filename)[0]}_{int(time.time())}.pdf"
-            file_path = os.path.join(category_path, unique_filename)
+            # Generate a unique filename
+            original_filename = os.path.splitext(file.filename)[0]
+            extension = os.path.splitext(file.filename)[1]
+            unique_filename = original_filename + extension
+            counter = 1
+
+            # Check for duplicates in the uploads folder
+            while os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)):
+                unique_filename = f"{original_filename}({counter}){extension}"
+                counter += 1
+
+            # Save the file in the uploads folder
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             file.save(file_path)
+            print(f"File saved: {file_path}")  # Debugging
+
+            # Generate a thumbnail for the PDF
+            thumbnail_name = unique_filename.replace('.pdf', '_thumb.png')
+            thumbnail_path = os.path.join(app.config['UPLOAD_FOLDER'], thumbnail_name)
+            print(f"Thumbnail path: {thumbnail_path}")  # Debugging
+
+            generate_pdf_thumbnail(file_path, thumbnail_path)
 
             # Fetch the category_id from the database
             conn = get_db_connection()
@@ -75,11 +93,45 @@ def upload_file():
             cursor.close()
             conn.close()
 
-            return jsonify({"message": "File uploaded successfully", "file_id": file_id}), 200
+            return jsonify({"message": "File uploaded successfully", "file_id": file_id, "thumbnail_name": thumbnail_name}), 200
         else:
             return jsonify({"error": "Invalid file type. Only PDFs are allowed."}), 400
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+# Function to generate a thumbnail for a PDF file
+def generate_pdf_thumbnail(pdf_path, thumbnail_path):
+    """Generate a thumbnail for the first page of a PDF."""
+    try:
+        print(f"Generating thumbnail for: {pdf_path}")  # Debugging
+        print(f"Saving thumbnail to: {thumbnail_path}")  # Debugging
+
+        pdf_document = fitz.open(pdf_path)
+        page = pdf_document[0]  # Get the first page
+        pix = page.get_pixmap()  # Render the page to an image
+        pix.save(thumbnail_path)  # Save the image as a PNG
+        pdf_document.close()
+        print(f"Thumbnail generated successfully: {thumbnail_path}")  # Debugging
+    except Exception as e:
+        print(f"Error generating thumbnail: {e}")
+
+# Endpoint to serve the thumbnail image
+@app.route('/thumbnails/<filename>', methods=['GET'])
+def get_thumbnail(filename):
+    """Serve the thumbnail image."""
+    try:
+        thumbnail_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        print(f"Requested thumbnail: {filename}")  # Debugging
+        print(f"Resolved path: {thumbnail_path}")  # Debugging
+
+        if os.path.exists(thumbnail_path):
+            return send_file(thumbnail_path, mimetype='image/png')
+        else:
+            print(f"Thumbnail not found: {thumbnail_path}")  # Debugging
+            return jsonify({"error": "Thumbnail not found"}), 404
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 
 # Endpoint to download a file by ID
 @app.route('/uploads/<int:id>', methods=['GET'])

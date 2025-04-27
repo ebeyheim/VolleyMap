@@ -66,6 +66,22 @@
     gap: 20px;
   }
 
+  .play-thumbnail img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover; /* Ensure the image fits nicely */
+    border-radius: 5px;
+  }
+  
+  .play-thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
   .play-card {
     background-color: #fcffef;
     border: 1px solid #ccc;

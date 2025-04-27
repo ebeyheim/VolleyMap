@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
-
 
 
 
@@ -15,8 +13,6 @@ import { Router } from '@angular/router';
   imports: [CommonModule, FormsModule, HttpClientModule, RouterModule], // Add FormsModule here
   templateUrl: './saved-maps.component.html',
   styleUrls: ['./saved-maps.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated, // Ensure styles are encapsulated
-
 })
 
 export class SavedMapsComponent implements OnInit {
@@ -27,7 +23,6 @@ export class SavedMapsComponent implements OnInit {
   selectedPlays: Set<number> = new Set(); // Track selected plays for deletion/download
 
   constructor(private http: HttpClient) {}
-  
 
 
   
@@ -35,31 +30,31 @@ export class SavedMapsComponent implements OnInit {
   ngOnInit(): void {
     this.fetchPlays();
     this.fetchCategories();
-
-
-
-
-    console.log('Saved Maps Component Initialized');
-
-
-
-
-
-    
   }
+
+  onThumbnailError(play: any): void {
+    play.thumbnail_name = 'placeholder.png'; // Use a default placeholder image
+  }
+  
 
   // Fetch all plays from the backend
   fetchPlays(): void {
     this.http.get('http://127.0.0.1:5000/uploads').subscribe(
       (response: any) => {
-        this.plays = response;
-        this.filteredPlays = response; // Initially show all plays
+        this.plays = response.map((play: any) => ({
+          ...play,
+          thumbnail_name: play.file_name.replace('.pdf', '_thumb.png'), // No category in path
+        }));
+        console.log(this.plays); // Debugging: Check the thumbnail paths
+        this.filteredPlays = this.plays; // Initially show all plays
       },
       (error) => {
         console.error('Error fetching plays:', error);
       }
     );
   }
+  
+  
 
   // Fetch all categories from the backend
   fetchCategories(): void {
@@ -72,7 +67,6 @@ export class SavedMapsComponent implements OnInit {
       }
     );
   }
-  
 
   // Filter plays by the selected category
   filterPlaysByCategory(): void {
@@ -116,13 +110,13 @@ export class SavedMapsComponent implements OnInit {
       alert('No plays selected for deletion.');
       return;
     }
-  
+
     const confirmDelete = confirm('Are you sure you want to delete the selected plays?');
     if (confirmDelete) {
       const deleteRequests = Array.from(this.selectedPlays).map((playId) =>
         this.http.delete(`http://127.0.0.1:5000/uploads/${playId}`).toPromise()
       );
-  
+
       Promise.all(deleteRequests)
         .then(() => {
           alert('Selected plays deleted successfully!');
@@ -134,23 +128,22 @@ export class SavedMapsComponent implements OnInit {
         });
     }
   }
-  
 
+  // Download selected plays
   downloadSelectedPlays(): void {
     if (this.selectedPlays.size === 0) {
       alert('No plays selected for download.');
       return;
     }
-  
+
     this.selectedPlays.forEach((playId) => {
       window.open(`http://127.0.0.1:5000/uploads/${playId}`, '_blank');
     });
   }
-  
 
   // Add a new play (redirect to play creation page)
   addNewPlay(): void {
-    window.location.href = '/play-creation';
-
+    alert('Redirecting to play creation page...');
+    // Implement navigation logic here (e.g., using Angular Router)
   }
 }
