@@ -2,9 +2,11 @@
   <div class="saved-maps-container">
     <!-- Header -->
     <header class="header">
-      <h1 class="app-title">VolleyMap</h1>
-      <h2 class="page-title">Saved Maps</h2>
-    </header>
+        <h1 class="app-title">VolleyMap</h1>
+        <h2 class="page-title">Saved Maps</h2>
+        <button class="nav-btn" (click)="navigateToPlayCreation()">Go to Play Creation</button>
+      </header>
+      
 
     <!-- Category Section -->
     <section class="category-section">
@@ -39,23 +41,26 @@
 
     <!-- Saved Plays Grid -->
     <section class="plays-grid">
-      <div
-        class="play-card"
-        *ngFor="let play of filteredPlays"
-        [class.selected]="selectedPlays.has(play.id)"
-        (click)="togglePlaySelection(play.id)"
-      >
-        <div class="play-thumbnail">
-          <img
-            [src]="'http://127.0.0.1:5000/thumbnails/' + play.thumbnail_name"
-            alt="Play Thumbnail"
-            (error)="onThumbnailError(play)"
-          />
+        <div
+          class="play-card"
+          *ngFor="let play of filteredPlays"
+          [class.selected]="selectedPlays.has(play.id)"
+          (click)="togglePlaySelection(play.id)"
+        >
+          <div class="play-card-inner">
+            <div class="play-thumbnail">
+              <img
+                [src]="'http://127.0.0.1:5000/thumbnails/' + play.thumbnail_name"
+                alt="Play Thumbnail"
+                (error)="onThumbnailError(play)"
+              />
+            </div>
+      
+            <p class="play-title">{{ play.file_name.slice(0, -4) }}</p>
+          </div>
         </div>
-
-        <p class="play-title">{{ play.file_name.slice(0, -4) }}</p>
-      </div>
-    </section>
+      </section>
+      
 
     <!-- Actions -->
     <section class="actions">
@@ -68,6 +73,6 @@
     </section>
 
     <!-- Floating Action Button -->
-    <button class="fab" (click)="addNewPlay()">+</button>
+    <button class="fab" (click)="navigateToPlayCreation()">+</button>
   </div>
 </div>

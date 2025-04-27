@@ -1,14 +1,63 @@
+.play-creation-container {
+  padding: 20px;
+  font-family: Arial, sans-serif !important;
+  color: #333;
+  background-color: #ffffff;
+  height: 100vh;
+}
 
 .main-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
-  gap: 100px; /* Space between court and annotations */
+  align-items: flex-start;
+  gap: 40px; /* Space between court and annotations */
   padding: 20px;
-  height: 100vh;
+  height: calc(100vh - 60px); /* Subtract header height */
   box-sizing: border-box;
   overflow: hidden; /* Ensure no overflow */
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 101;
+}
+
+.nav-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: auto; /* Push the button to the right */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.app-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: normal;
 }
 
 /* Left section: Court and Show Zones button */
@@ -19,6 +68,7 @@
   gap: 20px; /* Space between the button and court */
   height: 100%; /* Full height */
   justify-content: center; /* Center content vertically */
+  margin-top: 80px; /* Add margin to avoid overlapping with the header */
 }
 
 /* Court container */
@@ -35,8 +85,8 @@
 /* Court styling */
 .court {
   position: relative;
-  width: 550px;
-  height: 815px;
+  width: 625px;
+  height: 8px;
   border: 1.5px solid #000;
   background: #fcffef;
   overflow: visible;
@@ -144,7 +194,6 @@
   background-color: #0056b3;
 }
 
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -170,7 +219,6 @@
   justify-content: space-between; /* Add space between the button and the color picker */
   gap: 20px; /* Add more spacing between the delete button and the color picker */
 }
-
 
 .context-menu button {
   background: none;
@@ -205,14 +253,15 @@
   top: 0;
   height: 100%;
   width: 80px;
-  background-color: #f0f0f0;
-  border-right: 1px solid #ccc;
+  background-color: #e4e4e4;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
+  padding-top: 80px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   z-index: 100;
+  margin-top: 30px; /* Add margin to avoid overlapping with the header */
 
   .toolbar-item {
     display: flex;
@@ -468,6 +517,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 20px; /* Space between annotations and save section */
+  margin-top: 80px; /* Add margin to avoid overlapping with the header */
 }
 
 /* Annotations container */
@@ -622,7 +672,6 @@
     height: auto; /* Adjust height automatically */
   }
 }
-
 
 .navigation {
   margin: 20px 0;

@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms'; // Import FormsModule
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 
 
 
@@ -22,7 +24,7 @@ export class SavedMapsComponent implements OnInit {
   selectedCategory: string = 'All'; // Currently selected category
   selectedPlays: Set<number> = new Set(); // Track selected plays for deletion/download
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
 
   
@@ -30,6 +32,10 @@ export class SavedMapsComponent implements OnInit {
   ngOnInit(): void {
     this.fetchPlays();
     this.fetchCategories();
+  }
+
+  navigateToPlayCreation(): void {
+    this.router.navigate(['/play-creation']);
   }
 
   onThumbnailError(play: any): void {

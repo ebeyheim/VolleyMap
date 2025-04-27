@@ -8,7 +8,7 @@ import html2pdf from 'html2pdf.js';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ColorPickerModule } from 'ngx-color-picker';
-import { routes } from '../app.routes';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -35,6 +35,12 @@ export class PlayCreationComponent {
     this.fetchCategories(); // Fetch categories when the component initializes
   }
 
+
+
+  navigateToSavedMaps(): void {
+    this.router.navigate(['/saved-maps']);
+  }
+
   fetchCategories(): void {
     this.http.get<string[]>('http://127.0.0.1:5000/categories').subscribe(
       (response) => {
@@ -47,7 +53,7 @@ export class PlayCreationComponent {
     );
   }
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   shapes = [
     { type: 'setter', label: 'S' },
@@ -258,6 +264,9 @@ hideContextMenu(event: MouseEvent): void {
       // Append the annotations page to the PDF content
       pdfContent.appendChild(annotationsPage);
   
+      // Debugging: Log the PDF content structure
+      console.log('PDF Content:', pdfContent);
+  
       // Configure html2pdf.js options
       const options = {
         margin: 0,
@@ -294,6 +303,7 @@ hideContextMenu(event: MouseEvent): void {
       console.error('Error loading html2pdf.js:', error);
     });
   }
+  
   
   
 }
