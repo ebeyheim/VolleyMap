@@ -1,3 +1,4 @@
+
 .main-container {
   display: flex;
   flex-direction: row;
@@ -373,7 +374,7 @@
 .shape.x::before {
   content: "X"; /* Render the "X" */
   font-size: 60px; /* Set the font size */
-  font-weight: bold; /* Make the "X" bold */
+  font-weight: 100px; /* Make the "X" bold */
   color: #1e1e1e; /* Dark gray color for the "X" */
   display: block;
   text-align: center;
@@ -622,3 +623,23 @@
   }
 }
 
+
+.navigation {
+  margin: 20px 0;
+  text-align: center;
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
+  }
+}

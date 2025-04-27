@@ -1,0 +1,175 @@
+.saved-maps-page {
+  .saved-maps-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    height: 100vh;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ddd;
+    padding: 10px 20px;
+  }
+
+  .app-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .category-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .category-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .category-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .new-category-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .new-category-btn:hover {
+    background-color: #0056b3;
+  }
+
+  .category-select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .plays-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+  }
+
+  .play-card {
+    background-color: #fcffef;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .play-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .play-card.selected {
+    border: 2px solid #007bff;
+    background-color: #e6f7ff;
+  }
+
+  .play-thumbnail {
+    width: 100%;
+    height: 100px;
+    background-color: #ddd;
+    margin-bottom: 10px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .delete-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .delete-btn:hover {
+    background-color: #d32f2f;
+  }
+
+  .download-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 120px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .download-btn:hover {
+    background-color: #388e3c;
+  }
+
+  .fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .fab:hover {
+    background-color: #0056b3;
+  }
+
+  .navigation {
+    margin: 20px 0;
+    text-align: center;
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      text-decoration: none;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  }
+}

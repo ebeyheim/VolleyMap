@@ -1,0 +1,60 @@
+<div class="saved-maps-page">
+  <div class="saved-maps-container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="app-title">VolleyMap</h1>
+      <h2 class="page-title">Saved Maps</h2>
+    </header>
+
+    <!-- Category Section -->
+    <section class="category-section">
+      <h3 class="category-title">"Category"</h3>
+      <div class="category-actions">
+        <button class="btn new-category-btn" (click)="createCategory()">
+          New Category
+        </button>
+        <select
+          class="category-select"
+          [(ngModel)]="selectedCategory"
+          (change)="filterPlaysByCategory()"
+        >
+          <option value="All">All Categories</option>
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Saved Plays Grid -->
+    <section class="plays-grid">
+      <div
+        class="play-card"
+        *ngFor="let play of filteredPlays"
+        [class.selected]="selectedPlays.has(play.id)"
+        (click)="togglePlaySelection(play.id)"
+      >
+        <div class="play-thumbnail">
+          <img
+            [src]="'http://127.0.0.1:5000/uploads/' + play.file_name"
+            alt="Play Thumbnail"
+          />
+        </div>
+        <p class="play-title">{{ play.file_name }}</p>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="actions">
+      <button class="btn delete-btn" (click)="deleteSelectedPlays()">
+        Delete
+      </button>
+      <button class="btn download-btn" (click)="downloadSelectedPlays()">
+        Download
+      </button>
+    </section>
+
+    <!-- Floating Action Button -->
+    <button class="fab" (click)="addNewPlay()">+</button>
+  </div>
+</div>

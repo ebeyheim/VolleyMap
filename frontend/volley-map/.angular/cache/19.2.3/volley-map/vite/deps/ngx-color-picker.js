@@ -5,7 +5,7 @@ import {
   NgIf,
   NgTemplateOutlet,
   isPlatformBrowser
-} from "./chunk-WK5C4KY4.js";
+} from "./chunk-GHBOBQBK.js";
 import {
   ApplicationRef,
   ChangeDetectorRef,
@@ -58,7 +58,7 @@ import {
   ɵɵtextInterpolate,
   ɵɵtextInterpolate1,
   ɵɵviewQuery
-} from "./chunk-RJHLGT3Z.js";
+} from "./chunk-GBF7USYZ.js";
 import "./chunk-S35DAJRX.js";
 
 // node_modules/ngx-color-picker/fesm2022/ngx-color-picker.mjs
