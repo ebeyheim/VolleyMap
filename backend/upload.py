@@ -41,30 +41,33 @@ def upload_file():
         category = request.form.get('category', 'Uncategorized')  # Default to 'Uncategorized'
         if file.filename == '':
             return jsonify({"error": "No selected file"}), 400
-        if file and file.filename.endswith('.pdf'):
-            # Ensure the uploads folder exists
-            if not os.path.exists(app.config['UPLOAD_FOLDER']):
-                os.makedirs(app.config['UPLOAD_FOLDER'])
 
-            # Generate a unique filename
+        # Handle PDF files
+        if file and file.filename.endswith('.pdf'):
+            # Ensure the category folder exists
+            category_path = os.path.join(app.config['UPLOAD_FOLDER'], category)
+            if not os.path.exists(category_path):
+                os.makedirs(category_path)
+
+            # Generate a unique filename for the PDF
             original_filename = os.path.splitext(file.filename)[0]
             extension = os.path.splitext(file.filename)[1]
             unique_filename = original_filename + extension
             counter = 1
 
-            # Check for duplicates in the uploads folder
-            while os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)):
+            # Check for duplicates in the category folder
+            while os.path.exists(os.path.join(category_path, unique_filename)):
                 unique_filename = f"{original_filename}({counter}){extension}"
                 counter += 1
 
-            # Save the file in the uploads folder
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+            # Save the PDF file in the category folder
+            file_path = os.path.join(category_path, unique_filename)
             file.save(file_path)
-            print(f"File saved: {file_path}")  # Debugging
+            print(f"PDF saved: {file_path}")  # Debugging
 
             # Generate a thumbnail for the PDF
             thumbnail_name = unique_filename.replace('.pdf', '_thumb.png')
-            thumbnail_path = os.path.join(app.config['UPLOAD_FOLDER'], thumbnail_name)
+            thumbnail_path = os.path.join(app.config['UPLOAD_FOLDER'], thumbnail_name)  # Save thumbnails in the uploads folder
             print(f"Thumbnail path: {thumbnail_path}")  # Debugging
 
             generate_pdf_thumbnail(file_path, thumbnail_path)
@@ -94,26 +97,43 @@ def upload_file():
             conn.close()
 
             return jsonify({"message": "File uploaded successfully", "file_id": file_id, "thumbnail_name": thumbnail_name}), 200
+
+        # Handle unsupported file types
         else:
             return jsonify({"error": "Invalid file type. Only PDFs are allowed."}), 400
+
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
+
 # Function to generate a thumbnail for a PDF file
+import fitz  # PyMuPDF
+
 def generate_pdf_thumbnail(pdf_path, thumbnail_path):
-    """Generate a thumbnail for the first page of a PDF."""
+    """Generate a thumbnail for the first page of a PDF, focusing on the court area."""
     try:
         print(f"Generating thumbnail for: {pdf_path}")  # Debugging
         print(f"Saving thumbnail to: {thumbnail_path}")  # Debugging
 
         pdf_document = fitz.open(pdf_path)
         page = pdf_document[0]  # Get the first page
-        pix = page.get_pixmap()  # Render the page to an image
+
+        # Define the bounding box for the court area (adjust coordinates as needed)
+        # Coordinates are in points (1/72 inch), with (0, 0) at the top-left corner
+        court_bbox = fitz.Rect(1, 200, 555, 822)  # Example coordinates, adjust as needed
+
+        # Crop the page to the court area
+        page.set_cropbox(court_bbox)
+
+        # Render the cropped page to an image
+        pix = page.get_pixmap()
         pix.save(thumbnail_path)  # Save the image as a PNG
+
         pdf_document.close()
         print(f"Thumbnail generated successfully: {thumbnail_path}")  # Debugging
     except Exception as e:
         print(f"Error generating thumbnail: {e}")
+
 
 # Endpoint to serve the thumbnail image
 @app.route('/thumbnails/<filename>', methods=['GET'])
@@ -157,17 +177,36 @@ def delete_file(id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT file_path FROM plays WHERE id = %s", (id,))
+
+        # Fetch the file path and file name from the database
+        cursor.execute("SELECT file_path, file_name FROM plays WHERE id = %s", (id,))
         result = cursor.fetchone()
+
         if result:
             file_path = result[0]
+            file_name = result[1]
+
+            # Delete the PDF file
             if os.path.exists(file_path):
-                os.remove(file_path)  # Delete the file from the filesystem
+                os.remove(file_path)  # Delete the PDF file
+                print(f"Deleted PDF: {file_path}")  # Debugging
+
+            # Construct the thumbnail path
+            thumbnail_name = file_name.replace('.pdf', '_thumb.png')
+            thumbnail_path = os.path.join(app.config['UPLOAD_FOLDER'], thumbnail_name)
+
+            # Delete the thumbnail file
+            if os.path.exists(thumbnail_path):
+                os.remove(thumbnail_path)  # Delete the thumbnail
+                print(f"Deleted Thumbnail: {thumbnail_path}")  # Debugging
+
+            # Delete the record from the database
             cursor.execute("DELETE FROM plays WHERE id = %s", (id,))
             conn.commit()
             cursor.close()
             conn.close()
-            return jsonify({"message": "File deleted successfully"}), 200
+
+            return jsonify({"message": "File and thumbnail deleted successfully"}), 200
         else:
             cursor.close()
             conn.close()

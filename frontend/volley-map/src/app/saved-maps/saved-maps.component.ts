@@ -55,6 +55,7 @@ export class SavedMapsComponent implements OnInit {
   }
   
   
+  
 
   // Fetch all categories from the backend
   fetchCategories(): void {
