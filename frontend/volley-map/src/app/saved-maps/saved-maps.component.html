@@ -8,12 +8,12 @@
 
     <!-- Category Section -->
     <section class="category-section">
-      <h3 class="category-title">"Category"</h3>
+      <h3 class="category-title">{{ selectedCategory.toUpperCase() }}</h3>
       <div class="category-actions">
         <button class="btn new-category-btn" (click)="createCategory()">
           New Category
         </button>
-        <label for="category-select">Choose a category:</label>
+        <label for="category-select" class="category-label">Choose a category:</label>
         <select
           id="category-select"
           class="category-select"
@@ -25,6 +25,15 @@
             {{ category }}
           </option>
         </select>
+        <button
+          class="btn delete-category-btn"
+          [disabled]="
+            selectedCategory === 'All' || selectedCategory === 'Uncategorized'
+          "
+          (click)="deleteCategory()"
+        >
+          Delete Category
+        </button>
       </div>
     </section>
 
@@ -36,17 +45,15 @@
         [class.selected]="selectedPlays.has(play.id)"
         (click)="togglePlaySelection(play.id)"
       >
-      <div class="play-thumbnail">
-        <img
-          [src]="'http://127.0.0.1:5000/thumbnails/' + play.thumbnail_name"
-          alt="Play Thumbnail"
-          (error)="onThumbnailError(play)"
-        />
-      </div>
-      
-      
+        <div class="play-thumbnail">
+          <img
+            [src]="'http://127.0.0.1:5000/thumbnails/' + play.thumbnail_name"
+            alt="Play Thumbnail"
+            (error)="onThumbnailError(play)"
+          />
+        </div>
 
-        <p class="play-title">{{ play.file_name }}</p>
+        <p class="play-title">{{ play.file_name.slice(0, -4) }}</p>
       </div>
     </section>
 

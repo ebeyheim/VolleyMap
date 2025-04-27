@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HostListener } from '@angular/core';
 import html2pdf from 'html2pdf.js';
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { routes } from '../app.routes';
@@ -19,6 +19,7 @@ import { routes } from '../app.routes';
   styleUrls: ['./play-creation.component.scss'],
   encapsulation: ViewEncapsulation.Emulated, // Ensure styles are encapsulated
 
+
 })
 export class PlayCreationComponent {
   playTitle: string = 'Untitled Play'; // Default play title
@@ -26,12 +27,25 @@ export class PlayCreationComponent {
   annotations: string[] = [];
   courtShapes: any[] = []; // Store shapes added to the court
   showZones: boolean = false; // Track whether zones are visible
+  categories: string[] = []; // Store the categories
+
 
 
   ngOnInit(): void {
-    console.log('Play Creation Component Initialized');
+    this.fetchCategories(); // Fetch categories when the component initializes
   }
 
+  fetchCategories(): void {
+    this.http.get<string[]>('http://127.0.0.1:5000/categories').subscribe(
+      (response) => {
+        this.categories = response; // Store the categories
+        console.log('Categories fetched:', this.categories); // Debugging
+      },
+      (error) => {
+        console.error('Error fetching categories:', error);
+      }
+    );
+  }
 
   constructor(private http: HttpClient) {}
 

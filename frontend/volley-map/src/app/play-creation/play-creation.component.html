@@ -94,14 +94,13 @@
     <div class="save-section">
       <label for="category">Select Category:</label>
       <select id="category" #category>
-        <option value="offense">Offense</option>
-        <option value="defense">Defense</option>
-        <option value="serving">Serving</option>
-        <option value="general">General</option>
-        <option value="Uncategorized">Uncategorized</option>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
       </select>
       <button (click)="generatePDF(category.value)">Save as PDF</button>
     </div>
+
     <!-- Annotations Section -->
     <div class="container">
       <div class="title">

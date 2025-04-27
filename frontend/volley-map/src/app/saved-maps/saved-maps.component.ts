@@ -146,5 +146,32 @@ export class SavedMapsComponent implements OnInit {
   addNewPlay(): void {
     alert('Redirecting to play creation page...');
     // Implement navigation logic here (e.g., using Angular Router)
+    // this.router.navigate(['/play-creation']);
   }
+
+  deleteCategory(): void {
+    if (!this.selectedCategory || this.selectedCategory === 'All' || this.selectedCategory === 'Uncategorized') {
+      alert('This category cannot be deleted.');
+      return;
+    }
+  
+    const confirmDelete = confirm(`Are you sure you want to delete the category "${this.selectedCategory}"? This will delete all plays in this category.`);
+    if (confirmDelete) {
+      this.http.delete(`http://127.0.0.1:5000/categories/${this.selectedCategory}`).subscribe(
+        () => {
+          alert(`Category "${this.selectedCategory}" deleted successfully!`);
+          this.selectedCategory = 'All'; // Reset the selected category
+          this.fetchCategories(); // Refresh the category list
+          this.fetchPlays(); // Refresh the plays list
+        },
+        (error) => {
+          console.error('Error deleting category:', error);
+          alert('An error occurred while deleting the category.');
+        }
+      );
+    }
+  }
+  
 }
+
+

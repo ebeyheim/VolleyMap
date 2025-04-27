@@ -277,12 +277,21 @@ def delete_category(category_name):
                 for dir in dirs:
                     os.rmdir(os.path.join(root, dir))
             os.rmdir(category_path)
+
+            # Remove the category from the database
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM categories WHERE name = %s", (category_name,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
             return jsonify({"message": "Category deleted successfully"}), 200
         else:
             return jsonify({"error": "Category not found"}), 404
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-    
+
 # Endpoint to fetch all uploaded files
 @app.route('/uploads', methods=['GET'])
 def get_files():
