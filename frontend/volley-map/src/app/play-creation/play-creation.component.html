@@ -1,6 +1,10 @@
 <!-- Header -->
 <header class="header">
   <h1 class="app-title">VolleyMap</h1>
+  <!-- Show Zones Button -->
+  <button class="toggle-zones" (click)="toggleZones()">
+    {{ showZones ? "Hide Zones" : "Show Zones" }}
+  </button>
   <h2 class="page-title">Play Creation</h2>
   <button class="nav-btn" (click)="navigateToSavedMaps()">
     View Saved Maps
@@ -42,11 +46,6 @@
 <div class="main-container">
   <!-- Left Section: Court -->
   <div class="left-section">
-    <!-- Show Zones Button -->
-    <button class="toggle-zones" (click)="toggleZones()">
-      {{ showZones ? "Hide Zones" : "Show Zones" }}
-    </button>
-
     <!-- Court Container -->
     <div class="court-container">
       <div class="court">
@@ -111,7 +110,7 @@
     </div>
 
     <!-- Annotations Section -->
-    <div class="container">
+    <div class="annotations-container">
       <div class="title">
         <input
           type="text"

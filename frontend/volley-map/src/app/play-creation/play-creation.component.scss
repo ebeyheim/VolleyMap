@@ -1,21 +1,12 @@
-.play-creation-container {
-  padding: 20px;
-  font-family: Arial, sans-serif !important;
-  color: #333;
-  background-color: #ffffff;
-  height: 100vh;
-}
-
 .main-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  gap: 40px; /* Space between court and annotations */
+  gap: 100px; /* Space between court and annotations */
   padding: 20px;
   height: calc(100vh - 60px); /* Subtract header height */
   box-sizing: border-box;
-  overflow: hidden; /* Ensure no overflow */
 }
 
 .header {
@@ -74,24 +65,24 @@
   margin-top: 80px; /* Add margin to avoid overlapping with the header */
 }
 
-/* Court container */
 .court-container {
-  position: relative;
-  width: 625px; /* 550px (court width) + 75px */
-  height: 890px; /* 815px (court height) + 75px */
+  width: 700px; /* Match the court width */
+  height: 900px; /* Match the new court height */
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Court styling */
+
+
 .court {
+  align-self: center;
   position: relative;
-  width: 625px;
-  height: 8px;
+  width: 550px; /* Keep the width unchanged */
+  height: 815px; /* Reduce the height from 815px to 700px */
   border: 1.5px solid #000;
-  background: #fcffef;
+  background: #fcffef; /* Solid background color */
   overflow: visible;
 }
 
@@ -461,29 +452,6 @@
   transform: translateY(25px); /* Shift the label downward for the triangle */
 }
 
-/* Ensure no transparency in the court container */
-.court-container {
-  position: relative;
-  width: 625px; /* 550px (court width) + 75px */
-  height: 890px; /* 815px (court height) + 75px */
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff; /* Ensure solid background */
-  opacity: 1 !important; /* Force full opacity */
-}
-
-/* Ensure no transparency in the court */
-.court {
-  position: relative;
-  width: 550px;
-  height: 815px;
-  border: 1.5px solid #000;
-  background: #fcffef; /* Solid background color */
-  overflow: visible;
-  opacity: 1 !important; /* Force full opacity */
-}
 
 /* Ensure no transparency in the zone overlay */
 .zone-overlay {
@@ -514,24 +482,22 @@
   z-index: 3; /* Above the court but below players */
   opacity: 1 !important; /* Force full opacity */
 }
+
 /* Right section: Annotations and Save */
 .right-section {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 20px; /* Space between annotations and save section */
+  align-items: center;
+  gap: 20px; /* Space between the button and court */
+  height: 100%; /* Full height */
+  justify-content: center; /* Center content vertically */
   margin-top: 80px; /* Add margin to avoid overlapping with the header */
 }
 
-/* Annotations container */
-.annotations-container {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
+
 
 /* Main container for annotations */
-.container {
+.annotations-container {
   width: 400px;
   min-height: 600px;
   background-color: #ffffff;
@@ -657,6 +623,7 @@
     width: 90%;
   }
 }
+
 
 /* Responsive styles for tablets (max-width: 992px) */
 @media (max-width: 992px) {
