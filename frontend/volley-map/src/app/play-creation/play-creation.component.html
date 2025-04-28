@@ -1,4 +1,7 @@
 <header class="header">
+  <!-- Logo -->
+  <img src="logo.png" alt="Logo" class="header-logo" />
+
   <!-- Page Title -->
   <h2 class="page-title">VolleyMap</h2>
 
@@ -38,7 +41,6 @@
   </button>
 </header>
 
-
 <div class="toolbar">
   <div
     class="toolbar-item"
@@ -46,7 +48,16 @@
     (click)="addShape(shape)"
   >
     <div class="shape-preview" [ngClass]="shape.type">
-      <div class="shape-label">{{ shape.label }}</div>
+      <!-- Render volleyball image for the volleyball shape -->
+      <img
+        *ngIf="shape.type === 'volleyball'"
+        src="logo.png"
+        alt="Volleyball"
+        class="volleyball-icon"
+      />
+      <div *ngIf="shape.type !== 'volleyball'" class="shape-label">
+        {{ shape.label }}
+      </div>
     </div>
   </div>
 </div>
@@ -108,8 +119,8 @@
           cdkDragBoundary=".court-container"
           cdkDrag
           [cdkDragData]="shape"
-          [style.left.px]="shape.position.x"
-          [style.top.px]="shape.position.y"
+          [style.left.px]="shape.position?.x"
+          [style.top.px]="shape.position?.y"
           [style.zIndex]="shape.zIndex"
           [ngStyle]="{
             '--setter-color': shape.color,
@@ -118,7 +129,18 @@
           (cdkDragEnded)="onDragEnded($event, shape)"
           (contextmenu)="onRightClick($event, shape)"
         >
-          <div class="shape-label">{{ shape.label || "Default" }}</div>
+          <!-- Render volleyball shape -->
+          <img
+            *ngIf="shape.type === 'volleyball'"
+            [src]="shape.image"
+            alt="Volleyball"
+            class="volleyball-shape"
+          />
+
+          <!-- Render other shapes -->
+          <div *ngIf="shape.type !== 'volleyball'" class="shape-label">
+            {{ shape.label || "Default" }}
+          </div>
         </div>
       </div>
     </div>
@@ -130,7 +152,6 @@
 
     <!-- Annotations Section -->
     <div class="annotations-container">
-      
       <div class="frame">
         <div class="annotations">
           <input

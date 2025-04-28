@@ -28,6 +28,7 @@ export class PlayCreationComponent {
   courtShapes: any[] = []; // Store shapes added to the court
   showZones: boolean = false; // Track whether zones are visible
   categories: string[] = []; // Store the categories
+  Math = Math; // Expose Math for use in the template
 
 
 
@@ -65,6 +66,8 @@ export class PlayCreationComponent {
     { type: 'opposite', label: 'OPP' },
     { type: 'x', label: ' ' }, // New shape X
     { type: 'o', label: ' ' }, // New shape O
+    { type: 'volleyball', label: '' }, // New volleyball shape
+
   ];
 
   addShape(shape: any): void {
@@ -78,10 +81,15 @@ export class PlayCreationComponent {
       position: { x: 250, y: 350 }, // Default position
       zIndex: 1000,
       color: shape.type === 'x' || shape.type === 'o' ? null : '#1e1e1e', // No color for X and O
+      image: shape.type === 'volleyball' ? 'logo.png' : null, // Add image for volleyball
     });
   
     console.log('Court shapes:', this.courtShapes); // Debugging
   }
+  
+  
+  
+  
 
   changeShapeColor(event: any): void {
     if (this.selectedShape) {
