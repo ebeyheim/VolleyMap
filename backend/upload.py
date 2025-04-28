@@ -120,7 +120,7 @@ def generate_pdf_thumbnail(pdf_path, thumbnail_path):
 
         # Define the bounding box for the court area (adjust coordinates as needed)
         # Coordinates are in points (1/72 inch), with (0, 0) at the top-left corner
-        court_bbox = fitz.Rect(1, 200, 555, 822)  # Example coordinates, adjust as needed
+        court_bbox = fitz.Rect(40, 200, 555, 822)  # Example coordinates, adjust as needed
 
         # Crop the page to the court area
         page.set_cropbox(court_bbox)

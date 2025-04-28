@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
 
 })
 export class PlayCreationComponent {
-  playTitle: string = 'Untitled Play'; // Default play title
+  playTitle: string = ''; // Default play title
   annotation: string = '';
   annotations: string[] = [];
   courtShapes: any[] = []; // Store shapes added to the court

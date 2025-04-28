@@ -1,15 +1,43 @@
-<!-- Header -->
 <header class="header">
-  <h1 class="app-title">VolleyMap</h1>
+  <!-- Page Title -->
+  <h2 class="page-title">VolleyMap</h2>
+
   <!-- Show Zones Button -->
   <button class="toggle-zones" (click)="toggleZones()">
     {{ showZones ? "Hide Zones" : "Show Zones" }}
   </button>
-  <h2 class="page-title">Play Creation</h2>
+
+  <!-- Play Title Input -->
+  <div class="title">
+    <input
+      type="text"
+      placeholder="Enter Play Title"
+      [(ngModel)]="playTitle"
+      class="play-title-input"
+    />
+  </div>
+
+  <!-- Select Category Section -->
+  <div class="save-section">
+    <label for="category">Select Category:</label>
+    <select id="category" #category>
+      <option *ngFor="let category of categories" [value]="category">
+        {{ category }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Save Button -->
+  <button class="save-btn" (click)="generatePDF(category.value)">
+    Save as PDF
+  </button>
+
+  <!-- Navigation Button -->
   <button class="nav-btn" (click)="navigateToSavedMaps()">
     View Saved Maps
   </button>
 </header>
+
 
 <div class="toolbar">
   <div
@@ -99,31 +127,15 @@
   <!-- Right Section: Annotations and Save -->
   <div class="right-section">
     <!-- Save Section -->
-    <div class="save-section">
-      <label for="category">Select Category:</label>
-      <select id="category" #category>
-        <option *ngFor="let category of categories" [value]="category">
-          {{ category }}
-        </option>
-      </select>
-      <button (click)="generatePDF(category.value)">Save as PDF</button>
-    </div>
 
     <!-- Annotations Section -->
     <div class="annotations-container">
-      <div class="title">
-        <input
-          type="text"
-          placeholder="Enter Play Title"
-          [(ngModel)]="playTitle"
-          class="play-title-input"
-        />
-      </div>
+      
       <div class="frame">
         <div class="annotations">
           <input
             type="text"
-            placeholder="Add annotation"
+            placeholder="Add Notes"
             [(ngModel)]="annotation"
             (keydown.enter)="addAnnotation()"
           />
