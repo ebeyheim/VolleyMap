@@ -1,11 +1,11 @@
 import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
+  require_typeof
+} from "./chunk-4VTKR3L7.js";
+import {
   html2canvas_esm_exports,
   init_html2canvas_esm
 } from "./chunk-6K7SANME.js";
-import {
-  require_typeof
-} from "./chunk-4VTKR3L7.js";
 import {
   __commonJS,
   __esm,

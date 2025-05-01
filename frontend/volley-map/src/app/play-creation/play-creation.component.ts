@@ -202,18 +202,19 @@ export class PlayCreationComponent {
     console.log('Shape type:', shape.type);
 
     if (shape.type === 'arrow') {
-      // Add a new arrow with two anchor points
       this.courtShapes.push({
         type: shape.type,
         label: shape.label,
-        // Set start and end points instead of a single position
+        id: 'arrow-' + Date.now(), // Add unique ID
         startPoint: { x: 200, y: 350 },
         endPoint: { x: 300, y: 350 },
         zIndex: 1000,
         color: '#1e1e1e',
+        arrowColor: '#1e1e1e', // Separate property for arrow color
+        anchorColor: '#1e1e1e', // Separate property for anchor points
         isSelected: false,
       });
-    } else {
+    }  else {
       // Handle other shapes as before
       this.courtShapes.push({
         type: shape.type,
@@ -241,15 +242,18 @@ export class PlayCreationComponent {
   // In your updateShapeColor method
   updateShapeColor(newColor: string): void {
     if (this.selectedShape) {
-      // Update the color property for all shapes including arrows
-      if (this.selectedShape.type !== 'x' && this.selectedShape.type !== 'o') {
+      if (this.selectedShape.type === 'arrow') {
+        // Only update the arrow color, not anchor points
+        this.selectedShape.arrowColor = newColor;
+      } else if (this.selectedShape.type !== 'x' && this.selectedShape.type !== 'o') {
         this.selectedShape.color = newColor;
       }
-
-      // Trigger Angular's change detection
+      
+      // Trigger change detection
       this.courtShapes = [...this.courtShapes];
     }
   }
+  
 
   // Custom Tooltip
   contextMenuVisible = false;
@@ -257,22 +261,18 @@ export class PlayCreationComponent {
   selectedShape: any = null;
 
   onRightClick(event: MouseEvent, shape: any): void {
-    event.preventDefault(); // Prevent the default browser context menu
-
-    // Get the bounding rectangle of the selected shape
-    const shapeElement = event.target as HTMLElement;
-    const shapeRect = shapeElement.getBoundingClientRect();
-
-    // Calculate the position of the context menu (10px right and 10px above the shape)
+    event.preventDefault(); // Prevent default browser context menu
+    
+    // Use mouse event coordinates directly
     this.contextMenuPosition = {
-      x: shapeRect.left + shapeRect.width + 10, // 10px to the right of the shape
-      y: shapeRect.top - 10, // 10px above the shape
+      x: event.clientX,
+      y: event.clientY
     };
-
-    this.contextMenuVisible = true; // Show the context menu
-    this.selectedShape = shape; // Store the selected shape
-    console.log('Context menu position:', this.contextMenuPosition); // Debugging
+    
+    this.contextMenuVisible = true;
+    this.selectedShape = shape;
   }
+  
 
   deleteShapeFromContextMenu(): void {
     if (this.selectedShape) {
