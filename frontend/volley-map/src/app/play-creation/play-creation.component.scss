@@ -9,7 +9,6 @@
   box-sizing: border-box;
 }
 
-
 /* Arrow styling */
 .arrow-svg {
   position: absolute;
@@ -25,16 +24,14 @@
   background-color: transparent; /* Hollow */
   cursor: pointer;
   z-index: 1100;
-  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   box-sizing: content-box; /* Ensure border is added to the element size */
 }
-
 
 .anchor-point:hover {
   transform: scale(1.5);
   transition: transform 0.2s ease;
 }
-
 
 .arrow-body {
   position: absolute;
@@ -47,7 +44,7 @@
 }
 
 .arrow-body:hover {
-  border: 1px dashed rgba(0,0,0,0.3);
+  border: 1px dashed rgba(0, 0, 0, 0.3);
 }
 
 /* For toolbar preview */
@@ -61,25 +58,23 @@
   justify-content: center;
 }
 
-
 /* In your CSS */
 .toolbar .toolbar-item .shape-preview.arrow::before {
   content: "→";
   font-size: 30px;
   font-weight: bold;
   color: #1e1e1e;
+  padding: auto; /* Center the arrow */
+  display: flex;
 }
 
 .shape.arrow {
-  width: 0px; /* Adjust size for the toolbar */
+  width: 0px; /* No width */
   height: 0px;
   background-color: none; /* No background color */
   border: none; /* Remove any border */
   position: absolute;
 }
-
-
-
 
 .header {
   position: fixed;
@@ -115,7 +110,7 @@
 .shape.volleyball {
   width: 40px; /* Adjust size for the court */
   height: 40px;
-  background-color: none; /* Remove the black square */
+  background-color: transparent !important; /* Remove the black square */
   border: none; /* Remove any border */
   position: absolute;
 }
@@ -125,7 +120,6 @@
   height: 100%;
   object-fit: contain; /* Ensure the image fits within the bounds */
 }
-
 
 /* Navigation Button */
 .nav-btn {
@@ -193,8 +187,6 @@
   align-items: center;
   justify-content: center;
 }
-
-
 
 .court {
   align-self: center;
@@ -303,7 +295,6 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  
 }
 
 .toggle-zones:hover {
@@ -380,6 +371,12 @@
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   z-index: 100;
   margin-top: 30px; /* Add margin to avoid overlapping with the header */
+  
+  .toolbar-item:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+
+  }
 
   .toolbar-item {
     display: flex;
@@ -576,7 +573,6 @@
   transform: translateY(25px); /* Shift the label downward for the triangle */
 }
 
-
 /* Ensure no transparency in the zone overlay */
 .zone-overlay {
   position: absolute;
@@ -618,12 +614,10 @@
   margin-top: 80px; /* Add margin to avoid overlapping with the header */
 }
 
-
-
-/* Main container for annotations */
+/* Main container for annotations - fixed height */
 .annotations-container {
-  width: 400px;
-  min-height: 600px;
+  width: 450px;
+  height: 600px; /* Fixed height instead of min-height */
   background-color: #ffffff;
   border: 1px solid #8d8d8d;
   display: flex;
@@ -632,15 +626,43 @@
   padding: 20px;
   box-sizing: border-box;
   transition: box-shadow 0.2s ease-in-out;
+  overflow: hidden; /* Prevent container overflow */
 }
 
+/* Frame for annotations - make it scrollable except for input */
+.frame {
+  width: 360px;
+  height: 100%; /* Take full height of parent */
+  display: flex;
+  flex-direction: column;
+  position: relative; /* For sticky positioning of input */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding-right: 12px; /* Add padding to account for scrollbar width */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
 
+/* Style the scrollbar for better appearance */
+.frame::-webkit-scrollbar {
+  width: 8px;
+}
+
+.frame::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.frame::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 4px;
+}
+
+.frame::-webkit-scrollbar-thumb:hover {
+  background: #0056b3;
+}
 
 .container:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
-
 
 /* Frame for annotations and save section */
 .frame {
@@ -654,9 +676,16 @@
 
 /* Annotations input and button */
 .annotations {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #ffffff00;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
   display: flex;
   flex-direction: row;
   gap: 10px;
+  width: 100%;
 }
 
 .annotations input {
@@ -690,7 +719,7 @@
 .annotation {
   font-size: 14px;
   color: #333;
-  width: 100%; /* Use full width of parent */
+  width: calc(100% - 10px); /* Reduce width to avoid scrollbar overlap */
   display: flex; /* Use flexbox for layout */
   justify-content: space-between; /* Space between text and delete button */
   align-items: flex-start; /* Align items at the top */
@@ -710,7 +739,6 @@
   white-space: normal; /* Allow text to wrap */
   overflow: hidden; /* Prevent content from overflowing */
 }
-
 
 /* Style for the delete button */
 .delete-btn {
@@ -757,7 +785,7 @@
 }
 .save-section select:hover {
   border-color: #007bff; /* Change border color on hover */
-} 
+}
 
 /* Save Button */
 .save-btn {
@@ -775,7 +803,6 @@
   transition: all 0.3s ease;
 }
 
-
 /* Responsive design for smaller screens */
 @media (max-width: 420px) {
   .container {
@@ -787,7 +814,6 @@
     width: 90%;
   }
 }
-
 
 /* Responsive styles for tablets (max-width: 992px) */
 @media (max-width: 992px) {
