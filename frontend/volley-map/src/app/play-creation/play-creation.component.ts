@@ -305,6 +305,12 @@ export class PlayCreationComponent {
     }
   }
 
+  deleteAnnotation(index: number): void {
+    // Remove the annotation at the specified index
+    this.annotations.splice(index, 1);
+  }
+  
+
   toggleZones(): void {
     this.showZones = !this.showZones; // Toggle the zone view
   }

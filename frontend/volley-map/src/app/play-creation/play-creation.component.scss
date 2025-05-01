@@ -690,6 +690,51 @@
 .annotation {
   font-size: 14px;
   color: #333;
+  width: 100%; /* Use full width of parent */
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space between text and delete button */
+  align-items: flex-start; /* Align items at the top */
+  margin-bottom: 10px; /* Add spacing between annotations */
+  padding: 8px; /* Add some padding inside each annotation */
+  border-left: 3px solid #007bff; /* Blue border on the left for visual separation */
+  background-color: #f8f9fa; /* Light background for each note */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.annotation-text {
+  flex: 1; /* Take up available space */
+  padding-right: 8px; /* Space between text and button */
+  min-width: 0; /* Critical for text wrapping in flexbox! */
+  word-break: break-word; /* Force breaking at any point if needed */
+  overflow-wrap: break-word; /* Break long words if needed */
+  white-space: normal; /* Allow text to wrap */
+  overflow: hidden; /* Prevent content from overflowing */
+}
+
+
+/* Style for the delete button */
+.delete-btn {
+  background: none;
+  border: none;
+  color: #dc3545; /* Red color */
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 0 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0; /* Prevent button from shrinking */
+  margin-left: 8px; /* Space between text and button */
+}
+
+.delete-btn:hover {
+  background-color: #dc3545;
+  color: white;
 }
 
 /* Save Section */
