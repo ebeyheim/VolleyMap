@@ -138,9 +138,95 @@
           />
 
           <!-- Render other shapes -->
-          <div *ngIf="shape.type !== 'volleyball'" class="shape-label">
+          <div
+            *ngIf="shape.type !== 'volleyball' && shape.type !== 'arrow'"
+            class="shape-label"
+          >
             {{ shape.label || "Default" }}
           </div>
+
+          <!-- Arrow Shapes -->
+          <ng-container *ngIf="shape.type === 'arrow'">
+            <!-- The arrow line -->
+            <svg
+              class="arrow-svg"
+              [style.left.px]="0"
+              [style.top.px]="0"
+              [style.width.px]="700"
+              [style.height.px]="900"
+              [style.zIndex]="shape.zIndex"
+            >
+              <defs>
+                <marker
+                  id="arrowhead"
+                  markerWidth="10"
+                  markerHeight="7"
+                  refX="9"
+                  refY="3.5"
+                  orient="auto"
+                >
+                  <polygon
+                    points="0 0, 10 3.5, 0 7"
+                    [attr.fill]="shape.color"
+                  />
+                </marker>
+              </defs>
+              <line
+                [attr.x1]="shape.startPoint.x"
+                [attr.y1]="shape.startPoint.y"
+                [attr.x2]="shape.endPoint.x"
+                [attr.y2]="shape.endPoint.y"
+                [attr.stroke]="shape.color"
+                stroke-width="2"
+                marker-end="url(#arrowhead)"
+              />
+            </svg>
+
+            <!-- Start anchor point (draggable) -->
+            <div
+              class="anchor-point start-point"
+              cdkDrag
+              [style.left.px]="shape.startPoint.x - 5"
+              [style.top.px]="shape.startPoint.y - 5"
+              [style.backgroundColor]="shape.color"
+              [style.zIndex]="shape.zIndex + 1"
+              (mousedown)="startDragAnchorPoint($event, shape, 'startPoint')"
+              (cdkDragMoved)="onAnchorPointDrag($event, shape)"
+              (cdkDragEnded)="endDragAnchorPoint($event, shape)"
+              (contextmenu)="onRightClick($event, shape)"
+            ></div>
+
+            <!-- End anchor point (draggable) -->
+            <div
+              class="anchor-point end-point"
+              cdkDrag
+              [style.left.px]="shape.endPoint.x - 5"
+              [style.top.px]="shape.endPoint.y - 5"
+              [style.backgroundColor]="shape.color"
+              [style.zIndex]="shape.zIndex + 1"
+              (mousedown)="startDragAnchorPoint($event, shape, 'endPoint')"
+              (cdkDragMoved)="onAnchorPointDrag($event, shape)"
+              (cdkDragEnded)="endDragAnchorPoint($event, shape)"
+              (contextmenu)="onRightClick($event, shape)"
+            ></div>
+
+            <!-- Invisible div for moving the entire arrow -->
+            <div
+              class="arrow-body"
+              cdkDrag
+              [style.left.px]="shape.startPoint.x"
+              [style.top.px]="shape.startPoint.y"
+              [style.width.px]="getArrowLength(shape)"
+              [style.height.px]="10"
+              [style.transform]="'rotate(' + getArrowAngle(shape) + 'deg)'"
+              [style.transformOrigin]="'0 5px'"
+              [style.zIndex]="shape.zIndex"
+              (cdkDragStarted)="startEntireArrowDrag($event, shape)"
+              (cdkDragMoved)="moveEntireArrow($event, shape)"
+              (cdkDragEnded)="endEntireArrowDrag($event, shape)"
+              (contextmenu)="onRightClick($event, shape)"
+            ></div>
+          </ng-container>
         </div>
       </div>
     </div>

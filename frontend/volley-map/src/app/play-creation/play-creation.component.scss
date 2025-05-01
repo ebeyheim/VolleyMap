@@ -9,6 +9,73 @@
   box-sizing: border-box;
 }
 
+
+/* Arrow styling */
+.arrow-svg {
+  position: absolute;
+  pointer-events: none;
+}
+
+.anchor-point {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1100;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+
+.anchor-point:hover {
+  transform: scale(1.5);
+  transition: transform 0.2s ease;
+}
+
+.arrow-body {
+  position: absolute;
+  background-color: transparent;
+  cursor: move;
+  min-width: 20px;
+  min-height: 10px;
+  z-index: 1090;
+  border: 1px dashed transparent;
+}
+
+.arrow-body:hover {
+  border: 1px dashed rgba(0,0,0,0.3);
+}
+
+/* For toolbar preview */
+.shape-preview.arrow::before {
+  content: "→";
+  font-size: 30px;
+  font-weight: bold;
+  color: #1e1e1e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* In your CSS */
+.toolbar .toolbar-item .shape-preview.arrow::before {
+  content: "→";
+  font-size: 30px;
+  font-weight: bold;
+  color: #1e1e1e;
+}
+
+.shape.arrow {
+  width: 0px; /* Adjust size for the toolbar */
+  height: 0px;
+  background-color: none; /* No background color */
+  border: none; /* Remove any border */
+  position: absolute;
+}
+
+
+
+
 .header {
   position: fixed;
   top: 0;
