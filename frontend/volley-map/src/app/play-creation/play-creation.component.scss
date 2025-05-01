@@ -652,12 +652,12 @@
 }
 
 .frame::-webkit-scrollbar-thumb {
-  background: #007bff;
+  background: #9e9e9e;
   border-radius: 4px;
 }
 
 .frame::-webkit-scrollbar-thumb:hover {
-  background: #0056b3;
+  background: #808080;
 }
 
 .container:hover {
@@ -719,7 +719,7 @@
 .annotation {
   font-size: 14px;
   color: #333;
-  width: calc(100% - 10px); /* Reduce width to avoid scrollbar overlap */
+  width: calc(100% - 20px); /* Reduce width to avoid scrollbar overlap */
   display: flex; /* Use flexbox for layout */
   justify-content: space-between; /* Space between text and delete button */
   align-items: flex-start; /* Align items at the top */

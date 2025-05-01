@@ -1,48 +1,53 @@
+// Angular Core Imports
 import { Component, OnInit } from '@angular/core';
+
+// Angular Common & Router Imports
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
+
+// Angular Forms Imports
+import { FormsModule } from '@angular/forms';
+
+// HTTP Related Imports
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
-import { CommonModule } from '@angular/common'; // Import CommonModule
-import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
-
-
-
 
 @Component({
   selector: 'app-saved-maps',
-  standalone: true, // Declare this as a standalone component
-  imports: [CommonModule, FormsModule, HttpClientModule, RouterModule], // Add FormsModule here
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule, RouterModule],
   templateUrl: './saved-maps.component.html',
   styleUrls: ['./saved-maps.component.scss'],
 })
-
 export class SavedMapsComponent implements OnInit {
-  plays: any[] = []; // All saved plays
-  filteredPlays: any[] = []; // Plays filtered by category
-  categories: string[] = []; // List of categories
+  plays: any[] = [];               // All saved plays
+  filteredPlays: any[] = [];       // Plays filtered by category
+  categories: string[] = [];       // List of categories
   selectedCategory: string = 'All'; // Currently selected category
   selectedPlays: Set<number> = new Set(); // Track selected plays for deletion/download
 
   constructor(private http: HttpClient, private router: Router) {}
-
-
-  
-
   ngOnInit(): void {
     this.fetchPlays();
     this.fetchCategories();
   }
 
+  // Redirect to play creation page
   navigateToPlayCreation(): void {
     this.router.navigate(['/play-creation']);
   }
 
-  onThumbnailError(play: any): void {
-    play.thumbnail_name = 'placeholder.png'; // Use a default placeholder image
+  // Add a new play (redirect to play creation page)
+  addNewPlay(): void {
+    alert('Redirecting to play creation page...');
+    // Implement navigation logic here (e.g., using Angular Router)
+    // this.router.navigate(['/play-creation']);
   }
-  
 
+  /**
+   * Data Fetching Methods
+   * ---------------------------------------------------------------------------
+   */
   // Fetch all plays from the backend
   fetchPlays(): void {
     this.http.get('http://127.0.0.1:5000/uploads').subscribe(
@@ -59,9 +64,6 @@ export class SavedMapsComponent implements OnInit {
       }
     );
   }
-  
-  
-  
 
   // Fetch all categories from the backend
   fetchCategories(): void {
@@ -75,6 +77,19 @@ export class SavedMapsComponent implements OnInit {
     );
   }
 
+  /**
+   * UI Helper Methods
+   * ---------------------------------------------------------------------------
+   */
+  // Handle image loading errors by showing a placeholder
+  onThumbnailError(play: any): void {
+    play.thumbnail_name = 'placeholder.png'; // Use a default placeholder image
+  }
+
+  /**
+   * Category Management Methods
+   * ---------------------------------------------------------------------------
+   */
   // Filter plays by the selected category
   filterPlaysByCategory(): void {
     if (this.selectedCategory === 'All') {
@@ -102,6 +117,34 @@ export class SavedMapsComponent implements OnInit {
     }
   }
 
+  // Delete a category and all its plays
+  deleteCategory(): void {
+    if (!this.selectedCategory || this.selectedCategory === 'All' || this.selectedCategory === 'Uncategorized') {
+      alert('This category cannot be deleted.');
+      return;
+    }
+  
+    const confirmDelete = confirm(`Are you sure you want to delete the category "${this.selectedCategory}"? This will delete all plays in this category.`);
+    if (confirmDelete) {
+      this.http.delete(`http://127.0.0.1:5000/categories/${this.selectedCategory}`).subscribe(
+        () => {
+          alert(`Category "${this.selectedCategory}" deleted successfully!`);
+          this.selectedCategory = 'All'; // Reset the selected category
+          this.fetchCategories(); // Refresh the category list
+          this.fetchPlays(); // Refresh the plays list
+        },
+        (error) => {
+          console.error('Error deleting category:', error);
+          alert('An error occurred while deleting the category.');
+        }
+      );
+    }
+  }
+
+  /**
+   * Play Selection & Actions Methods
+   * ---------------------------------------------------------------------------
+   */
   // Toggle play selection for deletion/download
   togglePlaySelection(playId: number): void {
     if (this.selectedPlays.has(playId)) {
@@ -147,37 +190,4 @@ export class SavedMapsComponent implements OnInit {
       window.open(`http://127.0.0.1:5000/uploads/${playId}`, '_blank');
     });
   }
-
-  // Add a new play (redirect to play creation page)
-  addNewPlay(): void {
-    alert('Redirecting to play creation page...');
-    // Implement navigation logic here (e.g., using Angular Router)
-    // this.router.navigate(['/play-creation']);
-  }
-
-  deleteCategory(): void {
-    if (!this.selectedCategory || this.selectedCategory === 'All' || this.selectedCategory === 'Uncategorized') {
-      alert('This category cannot be deleted.');
-      return;
-    }
-  
-    const confirmDelete = confirm(`Are you sure you want to delete the category "${this.selectedCategory}"? This will delete all plays in this category.`);
-    if (confirmDelete) {
-      this.http.delete(`http://127.0.0.1:5000/categories/${this.selectedCategory}`).subscribe(
-        () => {
-          alert(`Category "${this.selectedCategory}" deleted successfully!`);
-          this.selectedCategory = 'All'; // Reset the selected category
-          this.fetchCategories(); // Refresh the category list
-          this.fetchPlays(); // Refresh the plays list
-        },
-        (error) => {
-          console.error('Error deleting category:', error);
-          alert('An error occurred while deleting the category.');
-        }
-      );
-    }
-  }
-  
 }
-
-

@@ -1,16 +1,25 @@
-import { HttpClient } from '@angular/common/http';
-import { HttpClientModule } from '@angular/common/http';
+// Angular Core Imports
+import { Component, OnInit, ViewEncapsulation, HostListener } from '@angular/core';
+
+// Angular Common & Router Imports
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
+
+// Angular Forms Imports
+import { FormsModule } from '@angular/forms';
+
+// Angular CDK Drag & Drop Imports
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CdkDragMove, CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HostListener } from '@angular/core';
+// HTTP Related Imports
+import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+
+// Third-party Library Imports
 import html2pdf from 'html2pdf.js';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { ColorPickerModule } from 'ngx-color-picker';
-import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-play-creation',
@@ -28,6 +37,7 @@ import { Router } from '@angular/router';
   encapsulation: ViewEncapsulation.Emulated, // Ensure styles are encapsulated
 })
 export class PlayCreationComponent {
+
   playTitle: string = ''; // Default play title
   annotation: string = '';
   annotations: string[] = [];
@@ -36,28 +46,7 @@ export class PlayCreationComponent {
   categories: string[] = []; // Store the categories
   Math = Math; // Expose Math for use in the template
 
-  ngOnInit(): void {
-    this.fetchCategories(); // Fetch categories when the component initializes
-  }
-
-  navigateToSavedMaps(): void {
-    this.router.navigate(['/saved-maps']);
-  }
-
-  fetchCategories(): void {
-    this.http.get<string[]>('http://127.0.0.1:5000/categories').subscribe(
-      (response) => {
-        this.categories = response; // Store the categories
-        console.log('Categories fetched:', this.categories); // Debugging
-      },
-      (error) => {
-        console.error('Error fetching categories:', error);
-      }
-    );
-  }
-
-  constructor(private http: HttpClient, private router: Router) {}
-
+  // Shape definitions
   shapes = [
     { type: 'setter', label: 'S' },
     { type: 'libero', label: 'L' },
@@ -72,11 +61,119 @@ export class PlayCreationComponent {
     { type: 'arrow', label: '' }, // New arrow shape
   ];
 
-  // Track which point is being dragged (start or end)
+  // Arrow drag tracking properties
   dragPointType: string | null = null;
   initialArrowDragPosition = { x: 0, y: 0 };
   previousDelta = { x: 0, y: 0 };
 
+  // Context menu properties
+  contextMenuVisible = false;
+  contextMenuPosition = { x: 0, y: 0 };
+  selectedShape: any = null;
+
+
+  constructor(private http: HttpClient, private router: Router) {}
+  ngOnInit(): void {
+    this.fetchCategories(); // Fetch categories when the component initializes
+  }
+
+  // Navigate to saved maps
+  navigateToSavedMaps(): void {
+    this.router.navigate(['/saved-maps']);
+  }
+
+  /**
+   * API Integration Methods
+   * ---------------------------------------------------------------------------
+   */
+  // Fetch available categories from the server
+  fetchCategories(): void {
+    this.http.get<string[]>('http://127.0.0.1:5000/categories').subscribe(
+      (response) => {
+        this.categories = response; // Store the categories
+        console.log('Categories fetched:', this.categories); // Debugging
+      },
+      (error) => {
+        console.error('Error fetching categories:', error);
+      }
+    );
+  }
+
+  /**
+   * Shape Management Methods
+   * ---------------------------------------------------------------------------
+   */
+  // Add new shape to the court
+  addShape(shape: any): void {
+    console.log('Shape clicked:', shape);
+    console.log('Shape type:', shape.type);
+
+    if (shape.type === 'arrow') {
+      this.courtShapes.push({
+        type: shape.type,
+        label: shape.label,
+        id: 'arrow-' + Date.now(), // Add unique ID
+        startPoint: { x: 200, y: 350 },
+        endPoint: { x: 300, y: 350 },
+        zIndex: 1000,
+        color: '#1e1e1e',
+        arrowColor: '#1e1e1e', // Separate property for arrow color
+        anchorColor: '#1e1e1e', // Separate property for anchor points
+        isSelected: false,
+      });
+    } else {
+      // Handle other shapes as before
+      this.courtShapes.push({
+        type: shape.type,
+        label: shape.label,
+        position: { x: 250, y: 350 },
+        zIndex: 1000,
+        color: shape.type === 'x' || shape.type === 'o' ? null : '#1e1e1e',
+        image: shape.type === 'volleyball' ? 'logo.png' : null,
+      });
+    }
+
+    console.log('Court shapes:', this.courtShapes);
+  }
+
+  // Change color of the selected shape
+  changeShapeColor(event: any): void {
+    if (this.selectedShape) {
+      const newColor = event.target.value; // Get the selected color from the color picker
+      this.selectedShape.color = newColor; // Update the color property of the selected shape
+
+      // Reassign the courtShapes array to trigger Angular's change detection
+      this.courtShapes = [...this.courtShapes];
+    }
+  }
+
+  // Update shape color from color picker
+  updateShapeColor(newColor: string): void {
+    if (this.selectedShape) {
+      if (this.selectedShape.type === 'arrow') {
+        // Only update the arrow color, not anchor points
+        this.selectedShape.arrowColor = newColor;
+      } else if (
+        this.selectedShape.type !== 'x' &&
+        this.selectedShape.type !== 'o'
+      ) {
+        this.selectedShape.color = newColor;
+      }
+
+      // Trigger change detection
+      this.courtShapes = [...this.courtShapes];
+    }
+  }
+
+  // Toggle zone visibility
+  toggleZones(): void {
+    this.showZones = !this.showZones; // Toggle the zone view
+  }
+
+  /**
+   * Arrow Manipulation Methods
+   * ---------------------------------------------------------------------------
+   */
   // Method called when starting to drag an anchor point
   startDragAnchorPoint(
     event: MouseEvent,
@@ -88,8 +185,6 @@ export class PlayCreationComponent {
     shape.isSelected = true;
   }
 
-  // Method called when dragging an anchor point
-  // Method called when dragging an anchor point
   // Method called when dragging an anchor point
   onAnchorPointDrag(event: CdkDragMove, shape: any): void {
     if (!this.dragPointType || !shape) return;
@@ -197,71 +292,11 @@ export class PlayCreationComponent {
     return Math.atan2(dy, dx) * (180 / Math.PI);
   }
 
-  addShape(shape: any): void {
-    console.log('Shape clicked:', shape);
-    console.log('Shape type:', shape.type);
-
-    if (shape.type === 'arrow') {
-      this.courtShapes.push({
-        type: shape.type,
-        label: shape.label,
-        id: 'arrow-' + Date.now(), // Add unique ID
-        startPoint: { x: 200, y: 350 },
-        endPoint: { x: 300, y: 350 },
-        zIndex: 1000,
-        color: '#1e1e1e',
-        arrowColor: '#1e1e1e', // Separate property for arrow color
-        anchorColor: '#1e1e1e', // Separate property for anchor points
-        isSelected: false,
-      });
-    } else {
-      // Handle other shapes as before
-      this.courtShapes.push({
-        type: shape.type,
-        label: shape.label,
-        position: { x: 250, y: 350 },
-        zIndex: 1000,
-        color: shape.type === 'x' || shape.type === 'o' ? null : '#1e1e1e',
-        image: shape.type === 'volleyball' ? 'logo.png' : null,
-      });
-    }
-
-    console.log('Court shapes:', this.courtShapes);
-  }
-
-  changeShapeColor(event: any): void {
-    if (this.selectedShape) {
-      const newColor = event.target.value; // Get the selected color from the color picker
-      this.selectedShape.color = newColor; // Update the color property of the selected shape
-
-      // Reassign the courtShapes array to trigger Angular's change detection
-      this.courtShapes = [...this.courtShapes];
-    }
-  }
-
-  // In your updateShapeColor method
-  updateShapeColor(newColor: string): void {
-    if (this.selectedShape) {
-      if (this.selectedShape.type === 'arrow') {
-        // Only update the arrow color, not anchor points
-        this.selectedShape.arrowColor = newColor;
-      } else if (
-        this.selectedShape.type !== 'x' &&
-        this.selectedShape.type !== 'o'
-      ) {
-        this.selectedShape.color = newColor;
-      }
-
-      // Trigger change detection
-      this.courtShapes = [...this.courtShapes];
-    }
-  }
-
-  // Custom Tooltip
-  contextMenuVisible = false;
-  contextMenuPosition = { x: 0, y: 0 };
-  selectedShape: any = null;
-
+  /**
+   * Context Menu Methods
+   * ---------------------------------------------------------------------------
+   */
+  // Show context menu on right-click
   onRightClick(event: MouseEvent, shape: any): void {
     event.preventDefault(); // Prevent default browser context menu
 
@@ -275,6 +310,7 @@ export class PlayCreationComponent {
     this.selectedShape = shape;
   }
 
+  // Delete shape from context menu
   deleteShapeFromContextMenu(): void {
     if (this.selectedShape) {
       const shapeIndex = this.courtShapes.indexOf(this.selectedShape);
@@ -286,6 +322,7 @@ export class PlayCreationComponent {
     }
   }
 
+  // Hide context menu when clicking elsewhere
   @HostListener('document:click', ['$event'])
   hideContextMenu(event: MouseEvent): void {
     const target = event.target as HTMLElement;
@@ -298,6 +335,11 @@ export class PlayCreationComponent {
     this.contextMenuVisible = false; // Hide the context menu otherwise
   }
 
+  /**
+   * Annotation Methods
+   * ---------------------------------------------------------------------------
+   */
+  // Add new annotation
   addAnnotation(): void {
     if (this.annotation) {
       this.annotations.push(this.annotation);
@@ -305,15 +347,17 @@ export class PlayCreationComponent {
     }
   }
 
+  // Delete an annotation
   deleteAnnotation(index: number): void {
     // Remove the annotation at the specified index
     this.annotations.splice(index, 1);
   }
 
-  toggleZones(): void {
-    this.showZones = !this.showZones; // Toggle the zone view
-  }
-
+  /**
+   * Drag & Drop Event Handlers
+   * ---------------------------------------------------------------------------
+   */
+  // Handle drag movement
   onDragMoved(event: any, player: any): void {
     const courtRect = (
       event.source.element.nativeElement.parentElement as HTMLElement
@@ -321,6 +365,7 @@ export class PlayCreationComponent {
     const dragRect = event.source.element.nativeElement.getBoundingClientRect();
   }
 
+  // Handle drag end
   onDragEnded(event: any, shape: any): void {
     const courtElement = event.source.element.nativeElement
       .parentElement as HTMLElement;
@@ -341,6 +386,11 @@ export class PlayCreationComponent {
     console.log(`Shape dropped at: (${newX}, ${newY})`);
   }
 
+  /**
+   * PDF Generation & Upload Methods
+   * ---------------------------------------------------------------------------
+   */
+  // Generate PDF and upload to server
   generatePDF(category: string): void {
     const courtElement = document.querySelector(
       '.court-container'
