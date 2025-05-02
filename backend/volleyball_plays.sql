@@ -15,7 +15,6 @@ CREATE TABLE categories (
 
 ALTER TABLE plays ADD COLUMN category_id INT DEFAULT NULL;
 
--- Add a foreign key constraint to link categories
 ALTER TABLE plays ADD CONSTRAINT fk_category
 FOREIGN KEY (category_id) REFERENCES categories(id)
 ON DELETE SET NULL;
