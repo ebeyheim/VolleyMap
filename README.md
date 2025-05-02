@@ -1,49 +1,35 @@
-# VolleyMap
+# VOLLEYMAP
 
-VolleyMap is a digital whiteboard and play management system designed specifically for volleyball coaches and players. It aims to simplify the process of creating, organizing, and sharing volleyball plays. The project is currently in development, with some features already implemented and more planned for future releases.
+## Elevate Your Game with Interactive Play Mapping
 
-## Current Features
+![Last Commit](https://img.shields.io/badge/last%20commit-today-brightgreen)
+![TypeScript](https://img.shields.io/badge/typescript-35.3%25-blue)
+![Languages](https://img.shields.io/badge/languages-4-orange)
 
-### PDF Database System:
-- Upload PDF files (e.g., play diagrams, strategies) to the system.
-- Store uploaded files in a MySQL database with metadata (e.g., file name, upload date).
-- View a list of uploaded files with unique IDs and filenames.
-- Download or delete files directly from the interface.
-- Web interface built with HTML, Bootstrap, and JavaScript.
-- Backend powered by Flask for handling file uploads, downloads, and database interactions.
-- Categorize plays by type (e.g., offensive, defensive, serve-receive).
+## Built with the tools and technologies:
 
-### Play Creation Tool:
-- Implement a drag-and-drop interface for creating volleyball plays.
-- Use Angular CDK to provide a robust and interactive design experience.
-- Allow users to add player positions, movements, and annotations directly on a digital court.
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![JSON](https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white)
+![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Puppeteer](https://img.shields.io/badge/Puppeteer-40B5A4?style=for-the-badge&logo=puppeteer&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
-### Toolbar
-- Toolbar with premade objects the user can drag-and-drop onto the court
-- Item deletion feature
-- Colors
-- Editable text
-  
-## Planned Features
+## Overview
 
-### Play Organization:
-- Add tags and descriptions for better searchability and organization.
-- Icons/Images for categories
+VolleyMap is an innovative developer tool designed to streamline the creation and management of volleyball plays, providing an interactive platform for coaches and players alike.
 
-### UI
-- Better Colors
-- Organization
+## Why VolleyMap?
 
-## How to Use
-#### Upload PDFs:
-1. Navigate to the "PDF Database System" section.
-2. Use the upload form to add PDF files to the system.
-3. Uploaded files will appear in the table with their unique ID and filename.
-#### Manage Files:
-1. Download files by clicking the "Download" button.
-2. Delete files by clicking the "Delete" button.
-#### Create Plays
-1. Drag objects around court
-2. Add annotations
-3. Select category to save file to
-4. Save file as PDF
+This project revolutionizes how volleyball plays are visualized and managed. The core features include:
+
+- 🏐 **Interactive Play Creation**: Users can visually design plays using a drag-and-drop interface, enhancing usability and engagement.
+
+- 📄 **PDF Export**: Allows users to export their plays as PDFs for easy sharing and printing, addressing the need for tangible documentation.
+
+- 📊 **Dynamic Data Management**: Facilitates the organization and retrieval of volleyball-related data, improving efficiency in managing plays and statistics.
+
+- 🎨 **Customizable Visuals**: Users can personalize their plays with color options, making the tool more engaging and visually appealing.
+
+- ⚙️ **Robust Backend Integration**: Ensures seamless communication with the backend for data storage and retrieval, enhancing performance and reliability.
