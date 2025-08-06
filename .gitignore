@@ -56,4 +56,4 @@ figmaTEST.css
 Thumbs.db
 
 # Ignore GIFs
-gifs/*.gif
+/assets
