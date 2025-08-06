@@ -2,7 +2,6 @@
 
 ## Elevate Your Game with Interactive Play Mapping
 
-![Last Commit](https://img.shields.io/badge/last%20commit-today-brightgreen)
 ![TypeScript](https://img.shields.io/badge/typescript-35.3%25-blue)
 ![Languages](https://img.shields.io/badge/languages-4-orange)
 
