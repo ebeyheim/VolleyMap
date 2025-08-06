@@ -55,6 +55,8 @@
     font-size: 24px;
     font-weight: bold;
     margin-left: auto;
+    color: rgb(55, 55, 55);
+   
   }
 
   .category-section {
@@ -197,10 +199,12 @@
     transform: scale(1.05); 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
+
+    
   }
 
   .play-card.selected {
-    box-shadow: 0 0 0 2px #007bff; /* Simulate a border */
+    box-shadow: 0 0px 1px 3px #B3E7F2; /* Simulate a border */
     background-color: #e6f7ff;
   }
 

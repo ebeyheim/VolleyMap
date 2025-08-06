@@ -54,3 +54,6 @@ figmaTEST.css
 # System files
 .DS_Store
 Thumbs.db
+
+# Ignore GIFs
+gifs/*.gif
