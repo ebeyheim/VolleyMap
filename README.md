@@ -33,3 +33,24 @@ This project revolutionizes how volleyball plays are visualized and managed. The
 - 🎨 **Customizable Visuals**: Users can personalize their plays with color options, making the tool more engaging and visually appealing.
 
 - ⚙️ **Robust Backend Integration**: Ensures seamless communication with the backend for data storage and retrieval, enhancing performance and reliability.
+
+
+## Demo
+
+### 1. Creating a New Play
+![Creating a New Play](./assets/Play_Creation.gif)
+
+### 2. Using the Context Menu
+![Using the Context Menu](./assets/Context_Menu.gif)
+
+### 3. Adding Notes
+![Adding Notes](./assets/Add_notes.gif)
+
+### 4. Saving Plays
+![Saving Plays](./assets/Saving_plays.gif)
+
+### 5. Downloading Plays
+![Downloading Plays](./assets/Downloading_plays.gif)
+
+### 6. Deleting Plays
+![Deleting Plays](./assets/Deleting_plays.gif)
