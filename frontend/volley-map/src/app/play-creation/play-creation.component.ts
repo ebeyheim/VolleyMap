@@ -442,8 +442,6 @@ export class PlayCreationComponent {
         // Fix arrow alignment in PDF - create new SVG elements instead of adjusting existing ones
         const arrowSvgs = courtClone.querySelectorAll('.arrow-svg');
         arrowSvgs.forEach((arrowSvg) => {
-          // Your existing arrow SVG handling code
-          // [code preserved from original]
         });
 
         courtClone.style.margin = '0 auto';

@@ -2,11 +2,16 @@
   <div class="saved-maps-container">
     <!-- Header -->
     <header class="header">
-        <h1 class="app-title">VolleyMap</h1>
-        <h2 class="page-title">Saved Maps</h2>
-        <button class="nav-btn" (click)="navigateToPlayCreation()">Go to Play Creation</button>
-      </header>
+      <!-- Logo -->
+      <img src="logo.png" alt="Logo" class="header-logo" />
+
+      <h1 class="app-title">VolleyMap</h1>
       
+      <h2 class="page-title">Saved Maps</h2>
+      <button class="nav-btn" (click)="navigateToPlayCreation()">
+        Go to Play Creation
+      </button>
+    </header>
 
     <!-- Category Section -->
     <section class="category-section">
@@ -15,7 +20,9 @@
         <button class="btn new-category-btn" (click)="createCategory()">
           New Category
         </button>
-        <label for="category-select" class="category-label">Choose a category:</label>
+        <label for="category-select" class="category-label"
+          >Choose a category:</label
+        >
         <select
           id="category-select"
           class="category-select"
@@ -41,26 +48,25 @@
 
     <!-- Saved Plays Grid -->
     <section class="plays-grid">
-        <div
-          class="play-card"
-          *ngFor="let play of filteredPlays"
-          [class.selected]="selectedPlays.has(play.id)"
-          (click)="togglePlaySelection(play.id)"
-        >
-          <div class="play-card-inner">
-            <div class="play-thumbnail">
-              <img
-                [src]="'http://127.0.0.1:5000/thumbnails/' + play.thumbnail_name"
-                alt="Play Thumbnail"
-                (error)="onThumbnailError(play)"
-              />
-            </div>
-      
-            <p class="play-title">{{ play.file_name.slice(0, -4) }}</p>
+      <div
+        class="play-card"
+        *ngFor="let play of filteredPlays"
+        [class.selected]="selectedPlays.has(play.id)"
+        (click)="togglePlaySelection(play.id)"
+      >
+        <div class="play-card-inner">
+          <div class="play-thumbnail">
+            <img
+              [src]="'http://127.0.0.1:5000/thumbnails/' + play.thumbnail_name"
+              alt="Play Thumbnail"
+              (error)="onThumbnailError(play)"
+            />
           </div>
+
+          <p class="play-title">{{ play.file_name.slice(0, -4) }}</p>
         </div>
-      </section>
-      
+      </div>
+    </section>
 
     <!-- Actions -->
     <section class="actions">

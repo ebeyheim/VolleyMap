@@ -37,12 +37,7 @@ export class SavedMapsComponent implements OnInit {
     this.router.navigate(['/play-creation']);
   }
 
-  // Add a new play (redirect to play creation page)
-  addNewPlay(): void {
-    alert('Redirecting to play creation page...');
-    // Implement navigation logic here (e.g., using Angular Router)
-    // this.router.navigate(['/play-creation']);
-  }
+
 
   /**
    * Data Fetching Methods
